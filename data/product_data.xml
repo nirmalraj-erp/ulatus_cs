@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="project_management_cost" model="product.product">
+            <field name="name">Project Management Cost</field>
+        </record>
+
+        <record model="ulatus.config.settings" id="ulatus_project_cost">
+            <field name="product_id" ref="project_management_cost"></field>
+        </record>
+    </data>
+</odoo>

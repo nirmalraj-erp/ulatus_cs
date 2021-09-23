@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="hide_odoo_binding" xml:space="preserve">
+    <t t-extend="UserMenu.Actions">
+        <t t-jquery="a:contains(Documentation)" t-operation="replace"/>
+        <t t-jquery="a:contains(Support)" t-operation="replace"/>
+        <t t-jquery=".divider" t-operation="replace"/>
+        <t t-jquery="a:contains(Preferences)" t-operation="replace"/>
+        <t t-jquery="a:contains(My Odoo.com account)" t-operation="replace"/>
+        <t t-jquery="a:contains(Shortcuts)" t-operation="replace"/>
+        <t t-jquery="a:contains(Log out)" t-operation="before">
+            <a role="menuitem" href="#" data-menu="password_change" class="dropdown-item">Change Password</a>
+        </t>
+    </t>
+
+</templates>

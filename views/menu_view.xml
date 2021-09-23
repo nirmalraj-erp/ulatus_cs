@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Ulatus root menu -->
+        <menuitem id="ulatus_root_menu" sequence="0" name="Ulatus Global CS" web_icon="ulatus_cs,static/description/icon.png" groups="ulatus_cs.group_cs_admin,ulatus_cs.group_cs_user,ulatus_cs.group_cs_manager,base.group_system"/>
+        
+        <menuitem id="menu_ulatus_root_master" name="Ulatus Global Masters" groups="group_cs_admin"/>
+        
+        <!-- Profile Menu-->
+        <menuitem id="ulatus_profile_menu" sequence="1" parent="ulatus_root_menu" name="Client"/>
+        
+        <!-- Inquiry Menu -->
+        <menuitem id="ulatus_Inquiries_menu" sequence="2" parent="ulatus_root_menu" name="Inquiries"/>
+       
+        <!-- Quotation Menu-->
+        <menuitem id="ulatus_root_quote_menu" sequence="3" parent="ulatus_root_menu" name="Quotations"/>
+        
+        <!-- cs menu -->
+        <menuitem id="ulatus_cs_root_menu" sequence="4" parent="ulatus_root_menu" name="CS"/>
+
+        <!-- System Master Sub Menu -->
+        <menuitem id="menu_ulatus_system_master" parent="menu_ulatus_root_master"
+                  sequence="1" name="System" />
+
+        <menuitem action="base.res_lang_act_window" id="menu_res_lang_act_window_ulatus" name="Language" parent="menu_ulatus_system_master" sequence="1"/>
+        
+        <menuitem id="ulatus_subject_industrial_area" parent="menu_ulatus_system_master" sequence="8" name="Subject and Industrial Area"/>
+
+        <!-- Services Master Sub Menu -->
+        <menuitem id="menu_ulatus_services_master" parent="menu_ulatus_root_master" sequence="2" name="Services" />
+
+        <!-- Fees Sub Menu -->
+        <menuitem id="menu_ulatus_fees_master" parent="menu_ulatus_root_master" sequence="3" name="Translations &amp; Fees" />
+
+        <!-- Localization master Inherit -->
+        <menuitem id="menu_ulatus_localization_master" parent="menu_ulatus_root_master" sequence="4" name="Localization" />
+        <menuitem id="ulatus_country_menu" sequence="1" action="base.action_country" parent="menu_ulatus_localization_master" name="Countries"/>
+        <menuitem id="ulatus_state_menu" sequence="2" action="base.action_country_state" parent="menu_ulatus_localization_master" name="States"/>
+        <menuitem id="ulatus_city_menu" sequence="3" action="base_address_city.action_res_city_tree" parent="menu_ulatus_localization_master" name="Cities"/>
+
+
+        <!-- department menu Inherit -->
+        <menuitem id="menu_ulatus_designation_master" parent="menu_ulatus_root_master" sequence="5" name="Designation" />
+
+        <!-- Email Sub Menu -->
+        <menuitem id="sub_menu_email" parent="menu_ulatus_root_master" sequence="6" name="Email Configuration"/>
+        <menuitem id="menu_action_fetchmail_server_tree_inherited" parent="sub_menu_email" action="fetchmail.action_email_server_tree" name="Incoming Mail Server" sequence="1"/>
+        <menuitem id="menu_mail_servers_inherited" parent="sub_menu_email" action="base.action_ir_mail_server_list" sequence="2" name="Outgoing Mail Server"/>
+        <menuitem id="menu_mail_template_config" name="Configure Mail Templates" parent="sub_menu_email" action="dynamic_mail.mail_template_config_action" sequence="3"/>
+        <menuitem id="mail_template_menu" name="Mail Template Master" parent="sub_menu_email" action="dynamic_mail.mail_template_action" sequence="4" />
+
+        <!-- ==================== Invoicing ====================================================== -->
+
+		<menuitem id="ulatus_invoicing" name="Invoicing" sequence="7" parent="menu_ulatus_root_master" />
+		 <menuitem id="menuitem_currency_master" sequence="1" name="Currency"
+                   action="base.action_currency_form" parent="ulatus_invoicing"/>
+        <menuitem action="account.action_tax_form" id="menu_action_tax_form" parent="ulatus_invoicing" sequence="2"/>
+        <menuitem id="menu_ecommerce_payment_acquirers_inherit"
+                  action="payment.action_payment_acquirer"
+                  parent="ulatus_invoicing" name="Payment Acquirers"/>
+
+        <!-- ==================== Configurations ====================================================== -->
+
+		<menuitem id="ulatus_configurations" name="Configurations" sequence="9" parent="menu_ulatus_root_master" />
+		
+        <!--Sale order menu hide -->
+        <menuitem id="sale.sale_menu_root" name="Sales" web_icon="sale,static/description/icon.png" active="False" sequence="7"/>
+
+        <!--Invoicing menu hide -->
+        <menuitem name="Invoicing" id="account.menu_finance" web_icon="account,static/description/icon.png" active="True" sequence="40"/>
+
+        <!--Discuss menu hide -->
+        <menuitem id="mail.menu_root_discuss" name="Discuss" action="mail.action_discuss" web_icon="mail,static/description/icon.png" groups="base.group_user" active="False" sequence="1"/>
+
+        <menuitem name="Contacts" id="contacts.menu_contacts" sequence="4" web_icon="contacts,static/description/icon.png" groups="base.group_user,base.group_partner_manager" active="False"/>
+
+        <!-- hide employee root menu Inherit -->
+        <menuitem id="hr.menu_hr_root" name="Employees" groups="hr.group_hr_manager,hr.group_hr_user,base.group_user"
+            web_icon="hr,static/description/icon.png" sequence="75" active="False"/>
+
+        <!-- Import Menu -->
+        <menuitem id="ulatus_data_import_menu" parent="menu_ulatus_root_master" sequence="21" name="Data Import"/>
+        
+        
+    </data>
+</odoo>

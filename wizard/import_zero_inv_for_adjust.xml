@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form view for import zero invoices for adjustment    -->
+        <record id="view_import_adjustment_amount" model="ir.ui.view">
+            <field name="name">amount.adjustment.import.form</field>
+            <field name="model">amount.adjustment.import</field>
+            <field name="arch" type="xml">
+                <form string="Upload File">
+                    <p class="oe_grey">Import the excel file with the list of ASNs for which invoices are to be adjusted.<br/>
+                        <b>Note:</b> Please follow the below nomenclature for sheet names and column names
+                        <br/><br/>
+                        <b><u>Sheet Nomenclature</u></b><br/>
+                        <b>
+                            Sheet 1 - premium
+                        </b>(list of premium adding ASNs)<br/>
+                        <b>Sheet 2 - discount</b>
+                        (list of discounting ASNs)<br/>
+                        <br/>
+                        <b><u>Column Nomenclature</u></b><br/>
+                        <b>
+                            Column A. asn_no<br/>
+                            Column B. adj_amt
+                        </b>
+                    </p>
+                    <field name="upload_file" required="1"/>
+                    <footer>
+                        <button name="import_adjustment" string="Adjust Invoices" type="object"
+                                class="btn btn-outline-info"/>
+                        <button string="Cancel" class="btn btn-outline-dark" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for import zero invoices for adjustment    -->
+        <record id="action_import_adjustment_amount" model="ir.actions.act_window">
+           <field name="name">Importing Wizard - Bulk Adjustment of Zero Invoices</field>
+           <field name="res_model">amount.adjustment.import</field>
+           <field name="view_mode">form</field>
+           <field name="target">new</field>
+        </record>
+
+<!--         Menu for import Bulk Monthly adjustment invoices for adjustment    -->
+        <menuitem id="menu_import_adjustment"
+                  name="Bulk Adjustment - Import Invoices"
+                  parent="monthly_group"
+                  sequence="3"
+                  action="action_import_adjustment_amount"/>
+
+    </data>
+</odoo>

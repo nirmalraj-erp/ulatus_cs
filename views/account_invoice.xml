@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Delivered ASN List-->
+    <!-- Delivered ASN Tree View-->
+    <record id="view_delivered_asn_tree" model="ir.ui.view">
+        <field name="name">delivered.asn.tree</field>
+        <field name="model">assignment</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false" default_order="deadline desc"
+                  decoration-success="invoice_status=='invoiced'"
+                  decoration-primary="invoice_status=='to_invoice'"
+                  decoration-muted="invoice_status=='pending'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="po_number"/>
+                <field name="deadline"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="total_fees" string="Total Fee"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="invoice_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Delivered ASN-->
+    <record id="action_delivered_asn" model="ir.actions.act_window">
+        <field name="name">Delivered ASN List - Monthly</field>
+        <field name="res_model">assignment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">50</field>
+        <field name="domain">[('state','=','deliver'),('send_inv_monthly', '=', True)]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="child_asn_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no Delivered ASN !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Monthly Invoice Payment -->
+    <record id="action_delivered_asn_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_delivered_asn_tree" />
+        <field name="act_window_id" ref="action_delivered_asn" />
+    </record>
+
+    <!-- Inheriting account_invoice and placing new fields-->
+    <record id="account_form_inherit_id" model="ir.ui.view">
+        <field name="name">account.invoice.form.inherit</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_term_id" position="replace">
+                <field name="payment_term_id" invisible="True"/>
+                <field name="send_inv_monthly" invisible="True"/>
+                <field name="inv_type" invisible="True"/>
+                <field name="priority"/>
+                <field name="po_number" readonly="True"/>
+                <field name="so_state" readonly="True"/>
+            </field>
+            <field name="residual" position="before">
+                <field name="received_amount"/>
+            </field>
+
+            <field name="team_id" position="after">
+                <field name="advance_payment" readonly="True"/>
+                <field name="char_count" readonly="True"/>
+                <field name="deadline" readonly="True"/>
+            </field>
+
+            <field name="partner_id" position="after">
+                <field name="payer_name" string="Payer Name"/>
+                <label for="street" string="Address"/>
+                    <div class="o_address_format">
+                        <field name="portal_street" placeholder="Street..." class="o_address_street"/>
+                        <field name="portal_street2" placeholder="Street 2..." class="o_address_street"/>
+                        <field name="portal_city" placeholder="City" class="o_address_city"/>
+                        <field name="portal_state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                        <field name="portal_zip" placeholder="ZIP" class="o_address_zip"/>
+                        <field name="portal_country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                    </div>
+            </field>
+        </field>
+    </record>
+
+    <!-- Payment wizard string changes-->
+    <record id="payment_form_inherit_id" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+        <field name="arch" type="xml">
+            <label for="amount" position="replace">
+                <label string="Amount" for="amount"  />
+            </label>
+            <label for="payment_difference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </label>
+            <field name="currency_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="payment_difference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="payment_difference_handling" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="payment_date" position="replace">
+                <field name="payment_date" string="Date of Payment"/>
+            </field>
+            <field name="journal_id" position="attributes">
+                <attribute name="string">Payment Mode</attribute>
+            </field>
+
+            <field name="communication" position="replace">
+                <field name="payment_control" required="1"/>
+            </field>
+
+            <xpath expr="/form/sheet/group/group[3]" position="after">
+                <p class="oe_grey" attrs="{'invisible':[('payment_control','=','invoice')]}">
+                    Import the excel file with the list of ASNs.<br/>
+                    <b>Note:</b> Please follow the below nomenclature
+                    <br/><br/>
+                    <b><u>Sheet Nomenclature</u></b><br/>
+                    <b>
+                        Sheet Name - payment
+                    </b>
+                    <br/><br/>
+                    <b><u>Column Nomenclature</u></b><br/>
+                    <b>
+                        Column A. asn_no<br/>
+                        Column B. payment
+                    </b>
+                </p>
+
+                <field name="upload_file" attrs="{'invisible':[('payment_control','=','invoice')],
+                                                  'required':[('payment_control','=','asn')]}"/>
+                <field name="monthly_payment_ids"
+                       widget="section_and_note_one2many"
+                       mode="tree"
+                       attrs="{'invisible':[('payment_control','=','invoice')]}">
+                    <tree string="Payment Control Panel" editable="top" create="false">
+                        <field name="asn_id" readonly="1"/>
+                        <field name="amount_total" readonly="1"/>
+                        <field name="to_pay"/>
+                    </tree>
+                </field>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Hide Action Items-->
+    <record id="make_invisible" model="res.groups">
+        <field name="name">Invisible</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="account.action_account_invoice_confirm">
+        <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="account.action_account_payment_from_invoices">
+        <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+    </record>
+
+    <record model="ir.actions.act_window" id="account.invoice_send">
+        <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>
+    </record>
+
+<!--    <record model="ir.actions.act_window" id="account.invoice_send">-->
+<!--        <field name="groups_id" eval="[(6,0,[ref('make_invisible')])]"/>-->
+<!--    </record>-->
+
+    <!-- Payment Request-->
+    <!-- Search filter for Payment Request-->
+    <record id="view_account_payment_filter" model="ir.ui.view">
+        <field name="name">account.invoice.select</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <search string="ASN Number">
+                <filter name="on-hold" string="ASN On-Hold" domain="[('so_state','=','on-hold')]"/>
+                <filter name="sale" string="ASN confirmed" domain="[('so_state','=','sale')]"/>
+                <filter name="asn_work_in_progress" string="ASN Work-in-progress" domain="[('so_state','=','asn_work_in_progress')]"/>
+                <filter name="done" string="ASN Completed" domain="[('so_state','=','done')]"/>
+                <filter name="cancel" string="Rejected" domain="[('so_state','=','cancel')]"/>
+                <field name="origin" string="ASN Code" context="{'active_test': False}" filter_domain="['|','|','|', ('number','ilike',self), ('origin','ilike',self), ('reference', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                <field name="number" string="Invoice" context="{'active_test': False}" filter_domain="['|','|','|', ('number','ilike',self), ('origin','ilike',self), ('reference', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+           </search>
+        </field>
+    </record>
+
+    <!-- View/Edit Invoice-->
+    <!-- View/Edit Invoice Tree -->
+    <record id="view_action_invoice_detail_tree" model="ir.ui.view">
+        <field name="name">view.action.invoice.detail.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false">
+                <field name="state" invisible="True"/>
+                <field name="origin" string="ASN Code"/>
+                <field name="payer_name" string="Payer Name"/>
+                <field name="number" string="Invoice Number"/>
+                <field name="date_invoice" string="Invoice Date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- View/Edit Invoice Form -->
+    <record id="view_action_invoice_detail_form" model="ir.ui.view">
+        <field name="name">view.action.invoice.detail.form</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Invoice View/Edit" create="false" delete="false">
+                <sheet name="Invoice View">
+
+                    <field name="type" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="inv_type" invisible="1"/>
+                    <h2>Invoice For</h2>
+                    <h2>
+                        <field name="number"/>
+                    </h2>
+                    <group>
+                        <group>
+                            <field name="payer_name" string="Payer Name"/>
+                            <label for="street" string="Address"/>
+                                <div class="o_address_format">
+                                    <field name="portal_street" placeholder="Street..." class="o_address_street"/>
+                                    <field name="portal_street2" placeholder="Street 2..." class="o_address_street"/>
+                                    <field name="portal_city" placeholder="City" class="o_address_city"/>
+                                    <field name="portal_state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                                    <field name="portal_zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="portal_country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                </div>
+                            <field name="cash_rounding_id" groups="account.group_cash_rounding"/>
+                        </group>
+                        <group>
+                            <field name="origin" string="Order No" attrs="{'invisible':[('inv_type', '=', 'mon')]}"/>
+                            <field name="date_invoice"/>
+                            <field name="number" string="Invoice Number"/>
+                            <field name="amount_total" string="Invoice Amount"/>
+                            <field name="date_due" string="Payment Due Date"/>
+                            <field name="move_name" invisible="1"/>
+                            <label for="currency_id" groups="base.group_multi_currency"/>
+                            <div groups="base.group_multi_currency">
+                                <field name="currency_id" options="{'no_create': True, 'no_open': True}" class="oe_inline"/>
+                                <field name="company_currency_id" invisible="1"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <group>
+                                <group>
+                                    <field name="char_count" string="Count" readonly="1"/>
+                                    <field name="priority" string="Priority" readonly="1"/>
+                                    <field name="deadline" string="Deadline" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="premium_amount" string="Premium" readonly="1"/>
+                                    <field name="ks_amount_discount" string="Discount"/>
+                                    <label for="po_number"/>
+                                    <div>
+                                        <field name="po_number" string="PO Number" readonly="1"/>
+                                        <button name="%(action_view_update_po_number)d" class="oe_link oe_read_only pt-0"
+                                                type="action" string="Update PO#"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Adjust View/Edit Invoice-->
+    <record id="action_invoice_detail" model="ir.actions.act_window">
+        <field name="name">View/Edit Invoice Detail</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('inv_type','in',('ind','mon'))]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no invoices to update data !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for View/Edit Invoice -->
+    <record id="action_invoice_detail_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_action_invoice_detail_tree" />
+        <field name="act_window_id" ref="action_invoice_detail" />
+    </record>
+
+    <!-- Form child action Ref for View/Edit Invoice -->
+    <record id="action_invoice_detail_form" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_action_invoice_detail_form" />
+        <field name="act_window_id" ref="action_invoice_detail" />
+    </record>
+
+    <!-- Adjust Pending Due Amount-->
+    <!-- Pending Due Tree -->
+    <record id="view_request_pending_due_tree" model="ir.ui.view">
+        <field name="name">view.request.pending.due.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false">
+                <field name="state" invisible="True"/>
+                <field name="origin" string="ASN Code"/>
+                <field name="number" string="Invoice Number"/>
+                <field name="date_invoice" string="Invoice Date"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount_total" string="Invoice Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="to_pay" string="Pending Payment"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Pending Due Form -->
+    <record id="view_request_pending_due_form" model="ir.ui.view">
+        <field name="name">view.request.pending.due.form</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Edit" create="false" delete="false">
+
+<!--                After Go-Live - to be taken into consideration-->
+<!--
+                <header>
+                    <button name="redraft_invoice" type="object"
+                            attrs="{'invisible':[('state', '=', 'draft')]}"
+                            string="Cancel &amp; Redraft" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible=" "/>
+                </header>
+-->
+
+                <sheet name="Invoice View">
+                    <field name="type" invisible="1"/>
+                    <field name="inv_type" invisible="1"/>
+                    <h3>
+                        <field name="number"/>
+                        <field name="state" invisible="1"/>
+                    </h3>
+                    <group col="3">
+                        <group string="Edit To Adjust">
+                            <field name="origin" string="Order No" invisible="1"/>
+                            <field name="date_invoice" invisible="1"/>
+                            <field name="char_count" string="Unit Count" invisible="1"/>
+                            <field name="discount_amount" string="Discounts So Far" readonly="1"/>
+                            <field name="premium_amount" string="Premiums So Far" readonly="1"/>
+                            <field name="amount_total" string="Invoice Amount" readonly="1" invisible="1"/>
+                            <field name="move_name" invisible="1"/>
+                            <field name="asn_stored_ids" invisible="1"/>
+<!--                            <label for="currency_id" groups="base.group_multi_currency"/>-->
+                            <div groups="base.group_multi_currency">
+                                <field name="currency_id" options="{'no_create_edit': True, 'no_open': True}" class="oe_inline" invisible="1"/>
+                                <field name="company_currency_id" invisible="1"/>
+                            </div>
+                            <field name="to_pay" string="Pending Payment" invisible="1"/>
+                            <label for="adjustment_type" class="oe_edit_only"/>
+                            <div>
+                                <field name="adjustment_type" class="oe_edit_only"/>
+                            </div>
+                            <label for="adjustment_amount" class="oe_edit_only"/>
+                            <div>
+                                <field name="adjustment_amount" class="oe_edit_only"/>
+                            </div>
+                            <label for="assignment_id" class="oe_edit_only" string="Assignment"/>
+                            <div>
+                                <field name="assignment_id" class="oe_edit_only"
+                                       options="{'no_create': True, 'no_create_edit':True}"
+                                       domain="[('id','in',asn_stored_ids)]" placeholder="Select ASN to Adjust"/>
+                            </div>
+                            <label for="adjustment_comment" class="oe_edit_only"/>
+                            <div>
+                                <field name="adjustment_comment" class="oe_edit_only" placeholder="Comment for Ref"/>
+                            </div>
+                            <button name="adjust_amount" type="object" class="oe_edit_only btn btn-primary">Update Amount</button>
+                        </group>
+
+                        <group>
+<!--                            <field name="payer_name" string="Payer Name" readonly="1" invisible="1"/>-->
+<!--
+                            <label for="street" string="Address"/>
+                                <div class="o_address_format">
+                                    <field name="portal_street" readonly="1"
+                                           placeholder="Street..." class="o_address_street"/>
+                                    <field name="portal_street2" readonly="1"
+                                           placeholder="Street 2..." class="o_address_street"/>
+                                    <field name="portal_city" readonly="1"
+                                           placeholder="City" class="o_address_city"/>
+                                    <field name="portal_state_id" readonly="1"
+                                           class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                                    <field name="portal_zip" readonly="1"
+                                           placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="portal_country_id" readonly="1"
+                                           placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                </div>
+                            <field name="cash_rounding_id" groups="account.group_cash_rounding"/>
+-->
+
+<!--                            <field name="adjustment_type" class="oe_edit_only"/>
+                            <field name="adjustment_amount" class="oe_edit_only"/>
+                            <button name="adjust_amount" icon="fa-arrow-right"
+                                    type="object" class="oe_edit_only">
+                                <span class="text-success">
+                                  Update Amount
+                                </span>
+                            </button>-->
+                        </group>
+                        <group>
+<!--                            <div class="oe_edit_only">
+                                <label for="to_pay" style="font-weight:bold;" string="To Pay"/>
+                                <br/>
+                                <label for="amount_total" style="font-weight:bold;color:Orange;"
+                                       string="(Value after Adjustment)" class="oe_inline oe_edit_only"/>
+                            </div>
+
+                            <div class="oe_edit_only">
+                                <field name="to_pay" string="Invoice Amount"/>
+                                <br/>
+                                <span style="color:Orange;font-weight:bold;" class="oe_edit_only" >(</span>
+                                <field name="final_amount" style="color:Orange;" class="oe_inline oe_edit_only"/>
+                                <span style="color:Orange;font-weight:bold;" class="oe_edit_only">)</span>
+                                <br/>
+                                <button name="adjust_amount" icon="fa-arrow-right"
+                                        type="object" class="oe_edit_only">
+                                    <span class="text-success">
+                                      Update Amount
+                                    </span>
+                                </button>
+                            </div>-->
+                        </group>
+                    </group>
+
+<!--                    After Go-Live - to be taken into consideration-->
+                    <notebook colspan="4">
+                        <page string="Cost Breakup">
+                            <field
+                                name="monthly_invoice_ids"
+                                nolabel="1"
+                                widget="section_and_note_one2many"
+                                mode="tree,kanban">
+                                <tree string="Invoice Lines" editable="top" readonly="1" decoration-success="to_pay==0">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="po_number" string="PO No."/>
+                                    <field name="partner_name" string="Manager"/>
+                                    <field name="name" string="Order No."/>
+                                    <field name="language_pair" string="Language Pair"/>
+                                    <field name="delivery_date" string="Delivered On"/>
+                                    <field name="char_count" string="Unit Count"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="special_discount"/>
+                                    <field name="special_premium"/>
+                                    <field name="amount_total" string="Fee"
+                                           widget="monetary" options="{'currency_field': 'currency_id'}" />
+                                    <field name="to_pay" string="To Pay"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed"/>
+                                <field name="amount_tax"/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                <field name="payments_widget" colspan="2" nolabel="1" widget="payment"/>
+                                <field name="residual" class="oe_subtotal_footer_separator" invisible="1"/>
+                                <field name="reconciled" invisible="1"/>
+                                <field name="outstanding_credits_debits_widget"
+                                       colspan="2" nolabel="1" widget="payment" invisible="1"/>
+                            </group>
+                        </page>
+                        <page string="Invoice Details" invisible="1">
+                            <field
+                                name="invoice_line_ids"
+                                nolabel="1"
+                                widget="section_and_note_one2many"
+                                mode="tree,kanban">
+                                <tree string="Invoice Lines" editable="top" readonly="1">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" domain="[('sale_ok','=',True)]" invisible="1"/>
+                                    <field name="origin" invisible="1"/>
+                                    <field name="is_rounding_line" invisible="1"/>
+                                    <field name="name" widget="section_and_note_text"/>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field
+                                        name="account_id"
+                                        groups="account.group_account_user"
+                                        attrs="{'required': [('display_type', '=', False)]}" invisible="1"
+                                    />
+                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting" invisible="1"
+                                        />
+                                    <field name="analytic_tag_ids" groups="analytic.group_analytic_tags" widget="many2many_tags" options="{'color_field': 'color'}" invisible="1"/>
+                                    <field name="quantity" invisible="1"/>
+                                    <field name="uom_id" groups="uom.group_uom" invisible="1"/>
+                                    <field name="price_unit" string="Unit Price"/>
+                                    <field name="discount" groups="base.group_no_one" string="Disc (%)" invisible="1"/>
+                                    <field name="invoice_line_tax_ids" widget="many2many_tags" options="{'no_create': True}"
+                                        />
+                                    <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed"/>
+                                <field name="amount_tax"/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                <field name="payments_widget" colspan="2" nolabel="1" widget="payment"/>
+                                <field name="residual" class="oe_subtotal_footer_separator" invisible="1"/>
+                                <field name="reconciled" invisible="1"/>
+                                <field name="outstanding_credits_debits_widget"
+                                       colspan="2" nolabel="1" widget="payment" invisible="1"/>
+                            </group>
+                            <field name="comment" placeholder="Terms and conditions..."/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+<!--
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+-->
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Pending Due-->
+    <record id="action_request_pending_due" model="ir.actions.act_window">
+        <field name="name">Adjust Pending Due - Monthly</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('inv_type','=','mon')]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no invoices to update data !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Pending Due -->
+    <record id="action_request_pending_due_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_request_pending_due_tree" />
+        <field name="act_window_id" ref="action_request_pending_due" />
+    </record>
+
+    <!-- Form child action Ref for Pending Due -->
+    <record id="action_request_pending_due_form" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_request_pending_due_form" />
+        <field name="act_window_id" ref="action_request_pending_due" />
+    </record>
+
+    <!-- Postpone Due Date-->
+    <!-- Postpone Due Date Tree -->
+    <record id="view_request_due_date_tree" model="ir.ui.view">
+        <field name="name">view.request.due.date.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false">
+                <field name="state" invisible="True"/>
+                <field name="origin" string="ASN Code"/>
+                <field name="number" string="Invoice Number"/>
+                <field name="date_invoice" string="Invoice Date"/>
+                <field name="date_due" string="Due Date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Postpone Due Date Form -->
+    <record id="view_request_due_date_form" model="ir.ui.view">
+        <field name="name">view.request.due.date.form</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Invoice View/Edit" create="false" delete="false">
+                <sheet name="Invoice View">
+
+                    <field name="type" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="inv_type" invisible="1"/>
+                    <h2>Invoice For</h2>
+                    <h2>
+                        <field name="number"/>
+                    </h2>
+                    <group>
+                        <group>
+                            <field name="payer_name" string="Payer Name" readonly="1"/>
+                            <label for="street" string="Address"/>
+                                <div class="o_address_format">
+                                    <field name="portal_street" readonly="1"
+                                           placeholder="Street..." class="o_address_street"/>
+                                    <field name="portal_street2" readonly="1"
+                                           placeholder="Street 2..." class="o_address_street"/>
+                                    <field name="portal_city" readonly="1"
+                                           placeholder="City" class="o_address_city"/>
+                                    <field name="portal_state_id" readonly="1"
+                                           class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                                    <field name="portal_zip" readonly="1"
+                                           placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="portal_country_id" readonly="1"
+                                           placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                                </div>
+                            <field name="cash_rounding_id" groups="account.group_cash_rounding"/>
+                        </group>
+                        <group>
+                            <field name="origin" string="Order No" attrs="{'invisible':[('inv_type', '=', 'mon')]}"/>
+                            <field name="date_invoice"/>
+                            <field name="amount_total" string="Invoice Amount"/>
+                            <field name="date_due" string="Payment Due Date"/>
+                            <field name="to_pay" string="Pending Due Amount"/>
+                            <field name="move_name" invisible="1"/>
+                            <label for="currency_id" groups="base.group_multi_currency"/>
+                            <div groups="base.group_multi_currency">
+                                <field name="currency_id" options="{'no_create': True, 'no_open': True}" class="oe_inline"/>
+                                <field name="company_currency_id" invisible="1"/>
+                            </div>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="postpone_date"/>
+                            <field name="postpone_reason"/>
+                            <field name="postpone_comment"/>
+                        </group>
+                    </group>
+                    <group>
+                        <button class="oe_highlight" name="update_due_date" string="Update Due Date" type="object"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Postpone Due Date-->
+    <record id="action_request_due_date" model="ir.actions.act_window">
+        <field name="name">Postpone Due Date</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('inv_type','in',('ind','mon'))]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no invoices to update data !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Postpone Due Date -->
+    <record id="action_request_due_date_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_request_due_date_tree" />
+        <field name="act_window_id" ref="action_request_due_date" />
+    </record>
+
+    <!-- Form child action Ref for Postpone Due Date -->
+    <record id="action_request_due_date_form" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_request_due_date_form" />
+        <field name="act_window_id" ref="action_request_due_date" />
+    </record>
+
+    <!-- Individual Invoice Payment-->
+    <!-- Individual Invoice Payment Tree -->
+    <record id="view_assignment_payment_tree" model="ir.ui.view">
+        <field name="name">view.assignment.payment.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false" decoration-success="payment_state=='paid'"
+                  decoration-primary="payment_state=='partial'">
+                <field name="origin" string="ASN"/>
+                <field name="number" string="Invoice No."/>
+                <field name="service" string="Service"/>
+                <field name="partner_id" string="Client Name"/>
+                <field name="advance_payment_value" string="Adv %"/>
+<!--                <field name="inv_type" string="Invoice Type"/>-->
+                <field name="date_due" string="Due Date"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount_total" string="Required Amt"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="received_amount" string="Received Amt"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="to_pay" string="Pending Amt"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" string="Status" invisible="1"/>
+                <field name="payment_state" string="Payment Status"/>
+                <button name="%(account.action_account_invoice_payment)d" type="action"
+                        attrs="{'invisible':[('payment_state', '=', 'paid')]}"
+                        string="Verify Payment" class="btn btn-outline-success btn-sm"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Individual Invoice Payment-->
+    <record id="action_assignment_payment" model="ir.actions.act_window">
+        <field name="name">Individual Invoice Payment Verification</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('amount_total','!=',0),
+            ('inv_type','=','ind')]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no invoices to update data !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Individual Invoice Payment -->
+    <record id="action_assignment_payment_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_assignment_payment_tree" />
+        <field name="act_window_id" ref="action_assignment_payment" />
+    </record>
+
+    <!-- Monthly Invoice Payment-->
+    <!-- Monthly Invoice Payment Tree -->
+    <record id="view_monthly_payment_tree" model="ir.ui.view">
+        <field name="name">view.monthly.payment.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false" decoration-success="payment_state=='paid'"
+                  decoration-primary="payment_state=='partial'">
+                <field name="number" string="Invoice Number"/>
+                <field name="partner_id" string="Client Name"/>
+                <field name="date_invoice" string="Invoice Date"/>
+<!--                <field name="inv_type" string="Invoice Type"/>-->
+                <field name="date_due" string="Due Date"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount_total" string="Required Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="received_amount" string="Received Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="to_pay" string="Pending Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" string="Status" invisible="1"/>
+                <field name="payment_state" string="Payment Status"/>
+                <button name="%(account.action_account_invoice_payment)d" type="action" states="open"
+                        string="Verify Payment" class="btn btn-outline-success btn-sm"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Monthly Invoice Payment-->
+    <record id="action_monthly_payment" model="ir.actions.act_window">
+        <field name="name">Monthly Invoice Payment Verification</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('amount_total','!=',0),
+            ('inv_type','=','mon')]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no invoices to update data !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Monthly Invoice Payment -->
+    <record id="action_monthly_payment_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_monthly_payment_tree" />
+        <field name="act_window_id" ref="action_monthly_payment" />
+    </record>
+
+    <!-- Bulk Adjustment-->
+    <!-- Amount Adjustment Payment Tree -->
+    <record id="view_bulk_adjustment_tree" model="ir.ui.view">
+        <field name="name">view.bulk.adjustment.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false" editable="bottom">
+                <field name="origin" string="ASN Code"/>
+                <field name="number" string="Invoice Number"/>
+                <field name="date_invoice" string="Invoice Date"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount_total" string="Required Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="received_amount" string="Received Amount" invisible="1"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="to_pay" string="Pending Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" string="Status" invisible="1"/>
+                <field name="adjustment_amount"/>
+                <field name="adjustment_type"/>
+                <field name="payment_state" string="Payment Status" readonly="1"/>
+                <button name="zero_invoice_adjust" type="object"
+                        string="Adjust Amount" class="btn-outline-info btn-sm"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Bulk Adjustment-->
+    <record id="action_bulk_adjustment" model="ir.actions.act_window">
+        <field name="name">Adjust Pending Due - Individual</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),
+            ('inv_type','=','ind')]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no invoices to adjust !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Amount Adjustment -->
+    <record id="action_bulk_adjustment_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bulk_adjustment_tree" />
+        <field name="act_window_id" ref="action_bulk_adjustment" />
+    </record>
+
+    <!-- Amount Adjustment Payment Tree - Zero Invoices-->
+    <record id="view_bulk_adjustment_zero_tree" model="ir.ui.view">
+        <field name="name">view.bulk.adjustment.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false" editable="bottom">
+                <field name="origin" string="ASN Code"/>
+                <field name="number" string="Invoice Number"/>
+                <field name="date_invoice" string="Invoice Date"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount_total" string="Required Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="received_amount" string="Received Amount" invisible="1"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="to_pay" string="Pending Amount"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="state" string="Status" invisible="1"/>
+                <field name="adjustment_amount" attrs="{'readonly':[('amount_total', '!=', 0)]}"/>
+                <field name="payment_state" string="Payment Status" readonly="1"/>
+                <button name="zero_invoice_adjust" type="object"
+                        string="Adjust Amount" class="btn-outline-info btn-sm"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Bulk Adjustment - Zero Invoices-->
+    <record id="action_bulk_adjustment_zero" model="ir.actions.act_window">
+        <field name="name">Amount Adjustment - Zero Invoices</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field eval="False" name="view_id"/>
+        <field name="limit">15</field>
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('amount_total','=',0),
+            ('inv_type','in',('ind','mon'))]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_account_payment_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no zero invoices to adjust !
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree child action Ref for Amount Adjustment - Zero Invoices -->
+    <record id="action_bulk_adjustment_zero_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bulk_adjustment_zero_tree" />
+        <field name="act_window_id" ref="action_bulk_adjustment_zero" />
+    </record>
+
+    <!-- Payment Reminder Tree view-->
+    <record id="payment_reminder_tree" model="ir.ui.view">
+        <field name="name">payment.reminder.tree</field>
+        <field name="model">invoice.payment.reminder</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" delete="false">
+                <field name="name" string="Reminder Type"/>
+                <field name="reminder_days" string="Reminder Days"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action for Payment Reminder-->
+    <record id="action_payment_reminder" model="ir.actions.act_window">
+        <field name="name">Payment Reminder Configuration</field>
+        <field name="res_model">invoice.payment.reminder</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+             There are no Reminder Config Data
+            </p>
+        </field>
+    </record>
+
+    <!-- Add action entry in the Action Menu for Invoice -->
+    <record id="bulk_adjustment_invoice" model="ir.actions.server">
+        <field name="name">Bulk Adjustment: Multiple Invoices</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="binding_model_id" ref="model_account_invoice"/>
+        <field name="view_type">tree</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bulk_adjustment_tree" />
+        <field name="domain">[('type','=','out_invoice'),('state','in',('open','paid')),('amount_total','=',0),
+            ('inv_type','in',('ind','mon'))]</field>
+        <field name="context">{'amount_total':0}</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.zero_invoice_adjust()
+        </field>
+    </record>
+
+    <!-- Menu Items-->
+    <menuitem id="payment_request_root"
+              name="Payment Request"
+              sequence="2"
+              groups="ulatus_cs.group_py_user"/>
+
+    <menuitem id="request_menu"
+              name ="Invoice Requests"
+              sequence="2"
+              parent="payment_request_root"/>
+
+    <menuitem id="verification_menu"
+              name ="Payment Verification"
+              sequence="3"
+              parent="payment_request_root"/>
+
+    <!-- Payment Request Grouping -->
+    <menuitem id="individual_group"
+              name="Individual"
+              sequence="3"
+              parent="request_menu"/>
+
+    <menuitem id="monthly_group"
+              name="Monthly"
+              sequence="4"
+              parent="request_menu"/>
+
+    <!-- Payment Verify Grouping -->
+    <menuitem id="individual_group_payment"
+              name="Individual"
+              sequence="1"
+              parent="verification_menu"/>
+
+    <menuitem id="monthly_group_payment"
+              name="Monthly"
+              sequence="2"
+              parent="verification_menu"/>
+
+    <menuitem id="invoice_detail"
+          name ="View/Edit Invoice Detail"
+          parent="request_menu"
+          sequence="1"
+          action="action_invoice_detail"/>
+
+    <menuitem id="request_due_date"
+      name ="Postpone Due Date"
+      parent="request_menu"
+      sequence="2"
+      action="action_request_due_date"/>
+
+    <!-- Individual Group-->
+    <menuitem id="bulk_adjustment_due"
+              name ="Adjust Pending Due"
+              parent="individual_group"
+              sequence="1"
+              action="action_bulk_adjustment"/>
+
+
+    <menuitem id="bulk_adjustment_due_zero"
+              name ="Amount Adjustment - Zero Invoices"
+              parent="individual_group"
+              sequence="2"
+              action="action_bulk_adjustment_zero"/>
+
+    <!--    Monthly Group -->
+    <menuitem id="delivered_asn"
+              name ="Delivered ASN List"
+              parent="monthly_group"
+              sequence="1"
+              action="action_delivered_asn"/>
+
+    <menuitem id="request_pending_due"
+              name ="Adjust Pending Due"
+              parent="monthly_group"
+              sequence="2"
+              action="action_request_pending_due"/>
+
+    <!-- Individual Group for Payment-->
+    <menuitem id="assignment_payment"
+              name ="Individual Invoice Payment"
+              parent="individual_group_payment"
+              sequence="1"
+              action="action_assignment_payment"/>
+
+    <!-- Monthly Group for Payment-->
+    <menuitem id="monthly_payment"
+              name ="Monthly Invoice Payment"
+              parent="monthly_group_payment"
+              sequence="2"
+              action="action_monthly_payment"/>
+
+    <menuitem id="invoice_payment_reminder"
+              name="Payment Reminder"
+              parent="ulatus_invoicing"
+              sequence="10"
+              action="action_payment_reminder"/>
+
+</odoo>

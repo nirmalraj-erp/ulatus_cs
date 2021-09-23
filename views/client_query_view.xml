@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- client Queries -->
+        <record id="client_query_tree_view" model="ir.ui.view">
+            <field name="name">client.query.tree</field>
+            <field name="model">client.query</field>
+            <field name="arch" type="xml">
+                <tree create="false" delete="false" edit="false">
+                    <field name="sr_no"/>
+                    <field name="client_id"/>
+                    <field name="query_type"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="client_query_form_view" model="ir.ui.view">
+            <field name="name">client.query.form</field>
+            <field name="model">client.query</field>
+            <field name="arch" type="xml">
+                <form create="false" delete="false" edit="false">
+                    <header>
+                        <button name="cs_respond" states="pending" string="Respond" type="object" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="pending,respond"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="sr_no" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="client_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="query_type"/>
+                            <field name="parent_asn_id" attrs="{'invisible':[('parent_asn_id','=',False)]}" context="{'form_view_ref':'ulatus_cs.assignment_order_form_view'}"/>
+                            <field name="delivery_deadline_date" attrs="{'invisible':[('query_type','in',['reference','instruction'])]}"/>
+                            <field name="query"/>
+                            <field name="child_asn_id" attrs="{'invisible':[('child_asn_id','=',False)]}" context="{'form_view_ref':'ulatus_cs.pm_asn_order_form_view'}" />
+                        </group>
+                        <group>
+                            <field name="client_response" attrs="{'invisible':[('state','=','pending')]}"/>
+                            <field name="target_lang_ids" widget="many2many_tags" attrs="{'invisible':[('child_asn_id','!=',False)]}"/>
+                            <field name="child_asn_target_lang_id" attrs="{'invisible':[('child_asn_id','=',False)]}" options="{'no_open': True}"/>
+                        </group>
+                        <notebook attrs="{'invisible':[('query_type','in',['deadline','instruction'])]}">
+                            <page string="Client Query" name="client_query" >
+                                <field name="client_query_line" force_save="1" readonly="0">
+                                    <tree editable="bottom" create="0" edit="0" delete="0">
+                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                        <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                        <field name="datas_fname" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                            <field name="file_type" invisible="1"/>
+                                            <field name="datas_fname" invisible="1"/>
+                                            <field name="name" invisible="1"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="activity_ids" widget="mail_activity" />
+                        <field name="message_ids" widget="mail_thread" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Client Queries Action -->
+        <record id="action_client_query" model="ir.actions.act_window">
+            <field name="name">Client Queries</field>
+            <field name="res_model">client.query</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="ulatus_client_query_sub_menu" sequence="4" action="action_client_query" parent="ulatus_cs_root_menu" name="Client Queries"/>
+    </data>
+</odoo>

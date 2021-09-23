@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Wizard to add revised Deadline, Instructions and Reference Files -->
+        <record id="child_asn_revised_view" model="ir.ui.view">
+            <field name="name">asn.revised.wiz.view</field>
+            <field name="model">assignment</field>
+            <field name="priority">105</field>
+            <field name="arch" type="xml">
+                <form string="Add or Update Deadline, Instructions and Reference Files">
+                    <group>
+                        <field name="deadline" options="{'datepicker': {'disable_past_dates': true}}"/>
+                    </group>
+                    <separator string="Instructions"/>
+                    <field name="assignment_instruction_line" nolable="1">
+                        <tree editable="bottom">
+                            <field name="name" required="1" attrs="{'readonly': [('is_original_ins','=',True)]}"/>
+                            <field name="ins_for_pm" invisible="1"/>
+                            <field name="mark_reviewed" invisible="1"/>
+                            <field name="is_original_ins" invisible="1"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="name" required="1"/>
+                                    <field name="ins_for_pm" invisible="1"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                    <separator string="Existing Original Reference Files"/>
+                    <field name="asn_reference_line" nolable="1">
+                        <tree editable="bottom" create="0">
+                            <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                            <field name="datas" force_save="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                            <field name="file_type" invisible="1"/>
+                            <field name="datas_fname" invisible="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="line_delete_btn" invisible="1"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                <field name="datas" force_save="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                <field name="file_type" invisible="1"/>
+                                <field name="datas_fname" invisible="1"/>
+                                <field name="name" invisible="1"/>
+                            </group>
+                        </form>
+                    </field>
+                    <span style="color:#7C7BAD; font-weight:bold; font-size:1.625rem;">
+                        Upload Reference File(s)
+                    </span>
+
+                    <div id="fine-uploader-manual-trigger-asn">
+                        <field name="id" readonly="1" invisible="1"/>
+                        <field name="file_uploader_no" readonly="1" invisible="1"/>
+                    </div>
+
+                    <script>
+                        $(document).ready(function(){
+                            $('.close').css({'display': 'none'});
+                            $('.modal-dialog').css({'width': '45%'});
+                        });
+                        var filenames = {};
+                        var manualUploader = new qq.FineUploader({
+                            element: document.getElementById('fine-uploader-manual-trigger-asn'),
+                            template: 'qq-template-manual-trigger',
+                            request: {
+                                endpoint: '/server/uploads',
+                                params:{
+                                    active_id:document.getElementsByName("id")[0].innerHTML,
+                                    active_model:'assignment',
+                                    field_name:'asn_reference_line',
+                                    so_type:'child_asn',
+                                    file_type:'refrence',
+                                    file_uploader_no:document.getElementsByName("file_uploader_no")[0].innerHTML,
+                                },
+                            },
+                            validation: {
+                                allowedExtensions: [],
+                                sizeLimit: 0,
+                                minSizeLimit: 0,
+                                itemLimit: 0,
+                                stopOnFirstInvalidFile: true,
+                                acceptFiles: null,
+                                image: {
+                                    maxHeight: 0,
+                                    maxWidth: 0,
+                                    minHeight: 0,
+                                    minWidth: 0
+                                }
+                            },
+                            callbacks: {
+                                onSubmit: function(id, name) {
+                                    filenames[id] = name;
+                                },
+                                onSubmitted: function(id, name) {},
+                                onComplete: function(id, name, responseJSON, maybeXhr) {},
+                                onAllComplete: function(successful, failed) {
+                                    $('#save-child-asn-btn').removeAttr("disabled");
+                                    $('#js-def-close').removeAttr("disabled");
+                                    $('#js-close').hide();
+                                    $('#js-def-close').show();
+                                },
+                                onCancel: function(id, name) {},
+                                onUpload: function(id, name) {
+                                    $('#js-def-close').hide();
+                                    $('#js-close').show();
+                                    $('#save-child-asn-btn').prop('disabled', true);
+                                    $('#js-def-close').removeAttr("disabled");
+                                },
+                                onUploadChunk: function(id, name, chunkData) {},
+                                onUploadChunkSuccess: function(id, chunkData, responseJSON, xhr) {},
+                                onResume: function(id, fileName, chunkData) {},
+                                onProgress: function(id, name, loaded, total) {},
+                                onTotalProgress: function(loaded, total) {},
+                                onError: function(id, name, reason, maybeXhrOrXdr) {
+                                    alert(qq.format("Error on file number {} - {}. Reason: {}", id, name, reason));
+                                },
+                                onAutoRetry: function(id, name, attemptNumber) {},
+                                onManualRetry: function(id, name) {},
+                                onValidateBatch: function(fileOrBlobData) {
+                                    var vals = [];
+                                    var existing_files = [];
+                                    var res = true;
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/get_filenames/',
+                                        dataType: 'json',
+                                        async: false,
+                                        data: {
+                                            active_id:document.getElementsByName("id")[0].innerHTML,
+                                            active_model:'assignment',
+                                            field_name:'asn_reference_line',
+                                            so_type:'child_asn',
+                                            file_type:'refrence',
+                                            file_uploader_no:document.getElementsByName("file_uploader_no")[0].innerHTML,
+                                        },
+                                        success: function (result) {
+                                            existing_files = result.existing_files;
+                                            for (i in fileOrBlobData){
+                                                    vals.push(qq.indexOf(existing_files, fileOrBlobData[i].name) &lt; 0);
+                                            }
+                                            if (vals.includes(false)){
+                                                var matche_filenames = [];
+                                                for (var i = 0; i &lt; existing_files.length; i++) {
+                                                    for (var j = 0; j &lt; fileOrBlobData.length; j++) {
+                                                        if (existing_files[i] === fileOrBlobData[j].name) matche_filenames.push(existing_files[i]);
+                                                    }
+                                                }
+                                                existing_files_name = matche_filenames.join("\n");
+                                                alert('Below selected files are already exists.\n' + existing_files_name);
+                                                res= false;
+                                            }
+                                        }
+                                    });
+                                    return res;
+                                },
+                                onSubmitDelete: function(id) {
+                                },
+                                onDelete: function(id,name) {
+                                    filenames[id] = name;
+                                },
+                                onDeleteComplete: function(id, xhrOrXdr, isError) {
+                                },
+                                onPasteReceived: function(blob) {},
+                                onStatusChange: function(id, oldStatus, newStatus) {},
+                                onSessionRequestComplete: function(response, success, xhrOrXdr) {
+                                }
+                            },
+                            messages: {
+                                typeError: "{file} has an invalid extension. Valid extension(s): {extensions}.",
+                                sizeError: "{file} is too large, maximum file size is {sizeLimit}.",
+                                minSizeError: "{file} is too small, minimum file size is {minSizeLimit}.",
+                                emptyError: "{file} is empty, please select files again without it.",
+                                noFilesError: "No files to upload. Please select file(s) to upload",
+                                tooManyItemsError: "Too many items ({netItems}) would be uploaded.  Item limit is {itemLimit}.",
+                                maxHeightImageError: "Image is too tall.",
+                                maxWidthImageError: "Image is too wide.",
+                                minHeightImageError: "Image is not tall enough.",
+                                minWidthImageError: "Image is not wide enough.",
+                                retryFailTooManyItems: "Retry failed - you have reached your file limit.",
+                                onLeave: "The files are being uploaded, if you leave now the upload will be canceled.",
+                                unsupportedBrowserIos8Safari: "Unrecoverable error - this browser does not permit file uploading of any kind due to serious bugs in iOS8 Safari.  Please use iOS8 Chrome until Apple fixes these issues."
+                            },
+                            chunking: {
+                                enabled: false,
+                                concurrent: {
+                                    enabled: true
+                                },
+                                success: {
+                                    endpoint: "/server/uploads_done"
+                                }
+                            },
+                            deleteFile: {
+                                enabled: true,
+                                method: 'POST',
+                                forceConfirm: true,
+                                endpoint: '/server/delete_file'
+                            },
+                            thumbnails: {
+                                placeholders: {
+                                    waitingPath: '/fine_uploader/static/src/img/waiting-generic.png',
+                                    notAvailablePath: '/fine_uploader/static/src/img/not_available-generic.png'
+                                }
+                            },
+                            autoUpload: true,
+                            debug: false,
+                            button: null,
+                            multiple: true,
+                            maxConnections: 10,
+                        });
+
+                        qq(document.getElementById("trigger-upload")).attach("click", function() {
+                            manualUploader.uploadStoredFiles();
+                        });
+
+                        qq(document.getElementById("js-close")).attach("click", function() {
+                            $('#js-close').removeAttr("disabled");
+                            if(manualUploader.getInProgress() != 0){
+                                alert('Please wait. The files are being uploaded.');
+                            }
+                        });
+
+                    </script>
+
+                    <footer>
+                        <button name="update_revised_details" string="Save" type="object" class="btn-primary"
+                            id="save-child-asn-btn"/>
+
+                        <button string="Close" class="btn-default" id="js-close" style="display:none;"/>
+
+                        <button special="cancel" string="Close" type="object" class="btn-default"
+                            id="js-def-close"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

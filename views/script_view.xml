@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+         <template id="assets_backend" name="ulatus assets" inherit_id="web.assets_backend">
+             <xpath expr="." position="inside">
+                 <link rel="stylesheet" href="/ulatus_cs/static/src/css/ulatus.css"/>
+                 <script type="text/javascript" src="/ulatus_cs/static/src/js/extend_user_menu.js"/>
+                 <script type="text/javascript" src="/ulatus_cs/static/src/js/field_controller.js"></script>
+                 <script type="text/javascript" src="/ulatus_cs/static/src/js/web.js"></script>
+                 <script type="text/javascript" src="/ulatus_cs/static/src/js/hide_delete_button.js"></script>
+                 <script type="text/javascript" src="/ulatus_cs/static/src/js/datepicker.js"></script>
+             </xpath>
+         </template>
+    </data>
+</odoo>

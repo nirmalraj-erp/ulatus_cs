@@ -1,0 +1,41 @@
+.text_width {
+    width: 700px;
+}
+
+.text_width textarea {
+    width: 100%;
+}
+
+.o_form_view .o_group.o_inner_group > tbody > tr > td.o_td_label {
+    width: 0%;
+    padding: 0 15px 0 0;
+    min-width: 181px!important;
+    margin: 0;
+}
+
+.Buttonright
+{
+   float: right;
+   bottom: 0;
+}
+
+.custombtn {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 6px 20px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.custombtn:hover {
+  background-color: RoyalBlue;
+}
+
+body {
+    font-family: 'Roboto';
+}
+
+.o_thread_message_content > .hide_download_files_button {
+    visibility: hidden;
+}

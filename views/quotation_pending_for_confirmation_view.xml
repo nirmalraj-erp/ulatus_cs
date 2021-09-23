@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pending_quotation_order_tree_view" model="ir.ui.view">
+            <field name="name">sale.order.tree.view</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                    <field name="partner_id"/>
+                    <field name="name" string="Inquiry No."/>
+                    <field name="inquiry_date" />
+                    <field name="deadline" />
+                    <field name="source_lang_id"/>
+                    <field name="target_lang_ids" widget="many2many_tags"/>
+                    <field name="pending_since"/>
+                    <field name="state" invisible="1"/>
+                    <button name="send_reminder" states="sent,revise" string="Send Reminder" type="object" class="oe_highlight"/>
+                    <field name="send_reminder_count"/>
+                    <button name="quotation_send_for_revision" states="sent,revise" string="Revise Quotation" type="object" class="oe_highlight"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="pending_quotation_order_form_view" model="ir.ui.view">
+            <field name="name">sale.order.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <header>
+                        <button name="send_reminder" states="sent,revise" string="Send Reminder" type="object"
+                                class="oe_highlight" context="{'view_type_flag': 'pending_quote_form'}"/>
+                        <button name="quotation_send_for_revision" states="sent,revise" string="Revise Quotation"
+                                type="object" class="oe_highlight"/>
+                        <button name="action_cancel" states="draft,sent,revision_request,revise,done" string="Reject"
+                                type="object" class="oe_highlight"/>
+                        <button name="quotation_url" string="Quotation Url" type="object" class="btn-primary"/>
+                        <field name="state" widget="statusbar" statusbar_visible="sent,revise"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                                <field name="is_seen" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="source_lang_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" readonly="1"/>
+                            <field name="create_date" string="Created On" readonly="1" />
+                            <label for="pending_since" />
+                            <div>
+                                <field name="pending_since" readonly="1" class="oe_inline"/>
+                            </div>
+                            <field name="partner_id" domain="[('type', '!=', 'end_client'),('is_portal', '=', True),('is_company', '=', False)]"
+                                   readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="currency_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="client_deadline" force_save="1" readonly="1"/>
+                            <field name="deadline" readonly="1" force_save="1"/>
+                            <field name="end_client_id" force_save="1" readonly="1"
+                                   options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <label for="organization_id"/>
+                            <div>
+                                <field name="organization_name" force_save="1" readonly="1" attrs="{'invisible':[('organization_id','!=', False),('organization_name','=', False)]}"/>
+                                <field name="organization_id" attrs="{'invisible':[('organization_name','!=', False),('organization_id','=', False)]}" readonly="1" force_save="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            </div>
+                            <field name="product_id" readonly="1" required="1" force_save="1" domain="[('product_bool', '=', True)]"
+                                   options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="priority" readonly="1" required="1" force_save="1"/>
+                            <field name="inquiry_date" readonly="1"/>
+                            <field name="process_type" attrs="{'invisible':[('process_type','=',False)]}" readonly="1"/>
+                            <label for="inquiry_id" />
+                            <div>
+                               <field name="inquiry_id" readonly="1"
+                                      options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                      context="{'form_view_ref':'ulatus_cs.client_reject_inquiry_form_view'}"/>
+                                <button name="open_inquiry_readonly" type="object" string="View"
+                                        class="oe_inline oe_link" style="padding-left:4px;"/>
+                            </div>
+                            <field name="quote_sent_datetime" readonly="1"/>
+                            <label for="parent_asn_ref_id" attrs="{'invisible':[('parent_asn_ref_id','=',False)]}"/>
+                            <div>
+                                <field name="parent_asn_ref_id" readonly="1" class="oe_inline"
+                                    options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                    attrs="{'invisible':[('parent_asn_ref_id','=',False)]}"/>
+                                <button name="open_original_asn" type="object" string="View"
+                                    class="oe_inline oe_link" style="padding-left:4px;"
+                                    attrs="{'invisible':[('parent_asn_ref_id','=',False)]}"/>
+                            </div>
+                            <field name="type" invisible="1"/>
+                            <field name="has_revision" invisible="1"/>
+                            <field name="is_file_revision" invisible="1"/>
+                            <field name="country" invisible="1"/>
+                            <field name="ip_address" invisible="1"/>
+                            <field name="browser" invisible="1"/>
+                        </group>
+                        <notebook>
+                            <page string="ASN Languages" name="asn_lang">
+                                <field name="order_line" force_save="1" readonly="1" widget="section_and_note_one2many" string="ASN Languages">
+                                    <tree>
+                                        <field name="source_lang_id" />
+                                        <field name="target_lang_id"/>
+                                        <field name="deadline" />
+                                        <field name="name" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group col="4">
+                                            <field name="source_lang_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            <field name="target_lang_id" domain="[('id','!=',source_lang_id)]" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            <field name="unit_id" readonly="1" force_save="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            <field name="client_deadline" />
+                                            <field name="character_count" />
+                                            <field name="deadline" />
+                                            <field name="name" invisible="1"/>
+                                            <field name="mainfile_count" invisible="1"/>
+                                            <field name="referencefile_count" invisible="1"/>
+                                        </group>
+                                        <notebook>
+                                            <page string="Client File &amp; Instructions" name="client_file_ins">
+                                                <separator string="Instructions"/>
+                                                <field name="sale_instruction_line" force_save="1" readonly="1">
+                                                    <tree editable="bottom">
+                                                        <field name="name" required="1" attrs="{'readonly': ['|', ('is_original_ins','=',True), ('is_default_ins','=',True)]}"/>
+                                                        <field name="mark_reviewed" />
+                                                        <field name="send_ins_to_pm"/>
+                                                        <field name="is_original_ins" invisible="1"/>
+                                                        <field name="is_default_ins" invisible="1"/>
+                                                    </tree>
+                                                    <form>
+                                                        <group>
+                                                            <group>
+                                                                <field name="name" required="1"/>
+                                                                <field name="mark_reviewed"/>
+                                                                <field name="send_ins_to_pm"/>
+                                                            </group>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                                <separator string="Translation Files"/>
+                                                <field name="sale_original_file_line" readonly="1">
+                                                    <tree editable="bottom" create="0" edit="0" delete="0">
+                                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                                        <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                                        <field name="character_count" invisible="1" default="0"/>
+                                                        <field name="file_type" invisible="1"/>
+                                                        <field name="datas_fname" invisible="1"/>
+                                                        <field name="name" invisible="1"/>
+                                                    </tree>
+                                                    <form>
+                                                        <group>
+                                                            <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                                            <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                                            <field name="character_count" invisible="1" default="0"/>
+                                                            <field name="file_type" invisible="1"/>
+                                                            <field name="datas_fname" invisible="1"/>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                                <separator string="Reference Files"/>
+                                                <field name="reference_assignment_line" readonly="1">
+                                                    <tree editable="bottom" create="0" delete="0">
+                                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                                        <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                                        <field name="file_type" invisible="1"/>
+                                                        <field name="name" invisible="1"/>
+                                                        <field name="datas_fname" invisible="1"/>
+                                                    </tree>
+                                                    <form>
+                                                        <group>
+                                                            <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                                            <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                                            <field name="file_type" invisible="1"/>
+                                                            <field name="datas_fname" invisible="1"/>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                            </page>
+                                            <page string="Service &amp; Memsource" name="service_memsource_ins">
+                                                <group name="translation_level" string="Translation Level's">
+                                                    <field name="service_level_line" force_save="1" nolabel="1">
+                                                        <tree editable="bottom" create="1">
+                                                            <field name="service_level_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                            <field name="deadline" required="1"/>
+                                                            <field name="unit_rate" required="1"/>
+                                                            <field name="fee" required="1"/>
+                                                            <field name="visible_to_client" readonly="1" invisible="1"/>
+                                                            <field name="reccommend" readonly="1"/>
+                                                            <field name="sale_service_line_id" invisible="1"/>
+                                                            <field name="is_original_service_level" invisible="1"/>
+                                                            <field name="previous_deadline_revise_day" invisible="1"/>
+                                                            <field name="deadline_revise_hrs" invisible="1"/>
+                                                            <field name="deadline_revise_day" invisible="1"/>
+                                                            <field name="revised_deadline" invisible="1"/>
+                                                        </tree>
+                                                        <form create="1">
+                                                            <group>
+                                                                <group>
+                                                                    <field name="service_level_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                                    <field name="deadline" required="1"/>
+                                                                    <field name="unit_rate" required="1"/>
+                                                                    <field name="fee" required="1"/>
+                                                                    <field name="reccommend" readonly="1"/>
+                                                                    <field name="sale_service_line_id" invisible="1"/>
+                                                                    <field name="is_original_service_level" invisible="1"/>
+                                                                </group>
+                                                            </group>
+                                                        </form>
+                                                    </field>
+                                                </group>
+                                                <separator string="Add-ons Fee"/>
+                                                <field name="addons_fee_line" force_save="1">
+                                                    <tree editable="bottom">
+                                                        <field name="addons_id" domain="[('addons_service_bool', '=', True)]"
+                                                               options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                        <field name="no_of_unit" attrs="{'readonly': [('enter_unit_bool','=',False)]}"/>
+                                                        <field name="price" required="1"/>
+                                                        <field name="total_price" readonly="1" force_save="1"/>
+                                                        <field name="unit_id" readonly="1" force_save="1"
+                                                               options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                        <field name="enter_unit_bool" invisible="1"/>
+                                                    </tree>
+                                                    <form>
+                                                        <group>
+                                                            <group>
+                                                                <field name="addons_id" domain="[('addons_service_bool', '=', True)]"
+                                                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                                <field name="no_of_unit" />
+                                                                <field name="price" required="1"/>
+                                                                <field name="total_price" readonly="1" force_save="1"/>
+                                                                <field name="unit_id" readonly="1"
+                                                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                            </group>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </form>
+                                </field>
+                                <group invisible="1" class="oe_subtotal_footer oe_right" colspan="2" name="total">
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="lowest_fee" readonly="1" force_save="1"/>
+                                    </div>
+                                    <field name="lowest_fee" readonly="1" force_save="1" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="char_count" readonly="1" force_save="1"/>
+                                    </div>
+                                    <field name="char_count" readonly="1" force_save="1" nolabel="1" class="oe_subtotal_footer_separator"/>
+                                    <field name="recommended_deadline" readonly="1" force_save="1"/>
+                                </group>
+                                <group string="Test" invisible="1">
+                                    <field name="translation_file_line" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="datas"
+                                                   widget="custom_binary_field" filename="datas_fname"/>
+                                            <field name="file_type" invisible="1"/>
+                                            <field name="datas_fname" invisible="1"/>
+                                            <field name="name" invisible="1"/>
+                                        </tree>
+                                    </field><br/>
+                                    <field name="refrence_file_line" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="datas" widget="custom_binary_field" filename="datas_fname"/>
+                                            <field name="file_type" invisible="1"/>
+                                            <field name="datas_fname" invisible="1"/>
+                                            <field name="name" invisible="1"/>
+                                        </tree>
+                                    </field><br/>
+                                    <field name="instruction_line" nolabel="1">
+                                        <tree>
+                                            <field name="name" />
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Add-ons Price Summary">
+                                    <field name="sale_order_addons_line" nolabel="1" force_save="1">
+                                        <tree editable="bottom" create="false" delete="false">
+                                            <field name="addons_service_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" domain="[('addons_service_bool','=', True)]"/>
+                                            <field name="unit_id" />
+                                            <field name="unit" invisible="1"/>
+                                            <field name="rate" invisible="1"/>
+                                            <field name="addons_price" force_save="1" readonly="1"/>
+                                            <field name="show_option" invisible="1"/>
+                                            <field name="enter_unit_bool" invisible="1"/>
+                                        </tree>
+                                        <form create="false" delete="false">
+                                            <group>
+                                                <group>
+                                                    <field name="addons_service_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" domain="[('addons_service_bool','=', True)]"/>
+                                                    <field name="unit_id" />
+                                                    <field name="unit" invisible="1"/>
+                                                    <field name="addons_price" force_save="1" readonly="1"/>
+                                                    <field name="show_option" invisible="1"/>
+                                                    <field name="enter_unit_bool" invisible="1"/>
+
+                                                </group>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>
+                                <group>
+                                    <group name="pmc">
+                                        <label for="project_management_cost" string="Project Management Cost"/>
+                                        <div>
+                                            <field name="project_management_cost" class="oe_inline"/>
+                                            <span class="o_form_label oe_inline"> (%)</span>
+                                        </div>
+                                    </group>
+                                </group>                                
+                                <group>
+                                    <group>
+                                        <field name="mark_as_special" />
+                                        <field name="trial_flag" string="Mark as Trial"/>
+                                        <field name="advance_payment" required="1"/>
+                                        <field name="advance_payment_value"
+                                               attrs="{'readonly':
+                                                        ['|',
+                                                        ('state','in',['sent', 'revise']),
+                                                        ('advance_payment','in',['0','100'])]}"/>
+                                    </group>
+                                </group>
+                                <group string="Special Checklist" attrs="{'invisible': [('checklist_line','=',[])]}">
+                                    <field name="checklist_line" nolabel="1" force_save="1" readonly="1">
+                                        <tree create="false" delete="false" editable="bottom">
+                                            <field name="checklist_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            <field name="option" />
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <group>
+                                                    <field name="checklist_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                                    <field name="option" />
+                                                </group>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>
+                                <h4 attrs="{'invisible': [('additional_comments','=',False)]}">Additional Comments</h4>
+                                <field name="additional_comments" readonly="1" nolabel="1" placeholder="Additional Comments .............." attrs="{'invisible': [('additional_comments','=',False)]}"/>
+                            </page>
+                            <page string="Revision History" invisible="1" name="revision_history">
+                                <field name="revision_request_line" nolabel="1" readonly="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="lowest_fee"/>
+                                        <field name="source_lang_id" invisible="1"/>
+                                        <field name="pending_since" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="deadline" invisible="1"/>
+                                        <field name="user_id" string="User"/>
+                                        <field name="state" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Quotation Referance" invisible="1" name="revision_history">
+                                <field name="quotation_ref_line" nolabel="1" readonly="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="lowest_fee"/>
+                                        <field name="source_lang_id" invisible="1"/>
+                                        <field name="pending_since" invisible="1"/>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="deadline" invisible="1"/>
+                                        <field name="user_id" string="User"/>
+                                        <field name="state" invisible="1"/>
+                                        <field name="to_show" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="activity_ids" widget="mail_activity" />
+                        <field name="message_ids" widget="mail_thread" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- Pending Quotation Action View -->
+        <record id="action_pending_quotation_order" model="ir.actions.act_window">
+            <field name="name">Quotations Pending for Confirmation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context">{'default_sale_bool':True}</field>
+            <field name="domain">[('state', 'in', ['sent','revise']),('sale_bool', '=', True)]</field>
+        </record>
+
+        <record id="action_pending_quotation_order_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="pending_quotation_order_tree_view"/>
+            <field name="act_window_id" ref="action_pending_quotation_order"/>
+        </record>
+
+        <record id="action_pending_quotation_order_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pending_quotation_order_form_view"/>
+            <field name="act_window_id" ref="action_pending_quotation_order"/>
+        </record>
+
+
+<!--        Quotations action : use while opening from view button-->
+        <record id="action_pending_quotation_order_form_readonly" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pending_quotation_order_form_view"/>
+        </record>
+
+
+        <menuitem id="ulatus_pending_quote_sub_menu" sequence="3" action="action_pending_quotation_order" parent="ulatus_root_quote_menu" name="Quotations Pending for Confirmation"/>
+    </data>
+</odoo>

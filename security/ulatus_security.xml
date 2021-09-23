@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="ir.module.category" id="module_crimson_ulatus_access">
+			<field name="name">Ulatus Access Rights</field>
+			<field name="sequence">114</field>
+			<field name="description">Helps you manage users.</field>
+		</record>
+
+		<record id="group_cs_user" model="res.groups">
+			<field name="name">CS User</field>
+			<field name="category_id" ref="ulatus_cs.module_crimson_ulatus_access" />
+			<field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+		</record>
+
+		<record id="group_cs_manager" model="res.groups">
+			<field name="name">CS Manager</field>
+			<field name="category_id" ref="ulatus_cs.module_crimson_ulatus_access" />
+			<field name="implied_ids" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+		</record>
+
+		<record id="group_cs_admin" model="res.groups">
+			<field name="name">CS Admin</field>
+			<field name="category_id" ref="ulatus_cs.module_crimson_ulatus_access" />
+			<field name="implied_ids" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+		</record>
+
+		<record id="group_pm_user" model="res.groups">
+			<field name="name">PM User</field>
+			<field name="category_id" ref="ulatus_cs.module_crimson_ulatus_access"/>
+		</record>
+
+		<record id="group_py_user" model="res.groups">
+			<field name="name">PY User</field>
+			<field name="category_id" ref="ulatus_cs.module_crimson_ulatus_access"/>
+		</record>
+
+		<record id="group_import_user" model="res.groups">
+			<field name="name">Legacy Data Importing</field>
+		</record>
+
+		<record model="ir.rule" id="assignment_instruction_rule">
+			<field name="name">Assignment Instruction</field>
+			<field name="model_id" ref="model_assignment_instruction_line"/>
+			<field name="domain_force">[('ins_for_pm','=',True)]</field>
+			<field name="groups" eval="[(4, ref('ulatus_cs.group_pm_user'))]"/>
+		</record>
+
+		<record id="account.menu_finance" model="ir.ui.menu" >
+     		<field name="groups_id" eval="[(6, 0, [ref('base.group_erp_manager')])]"/>
+		</record>
+
+<!--		For access older order for sale.order.line -->
+		<record id="sale_order_line_personal_old" model="ir.rule">
+			<field name="name">Personal Old Order Lines</field>
+			<field ref="model_sale_order_line" name="model_id"/>
+			<field name="domain_force">[('order_id.r_user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4, ref('sales_team.group_sale_salesman')),(4, ref('group_cs_user'))]"/>
+			<field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+		</record>
+
+<!--		For access older orders-->
+		<record id="sale_order_personal_old" model="ir.rule">
+			<field name="name">Personal Old Orders</field>
+			<field ref="model_sale_order" name="model_id"/>
+			<field name="domain_force">[('r_user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4, ref('sales_team.group_sale_salesman')),(4, ref('group_cs_user'))]"/>
+			<field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+		</record>
+
+<!--		For access own order-->
+		<record id="sale_order_personal_rule_add" model="ir.rule">
+			<field name="name">Personal Orders</field>
+			<field ref="model_sale_order" name="model_id"/>
+			<field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+			<field name="groups" eval="[(4, ref('sales_team.group_sale_salesman')),(4, ref('group_cs_user'))]"/>
+			<field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+		</record>
+
+<!--		For access all order-->
+		<record id="sale_order_see_all_add" model="ir.rule">
+			<field name="name">All Orders</field>
+			<field ref="model_sale_order" name="model_id"/>
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+			<field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+		</record>
+
+	</data>
+</odoo>

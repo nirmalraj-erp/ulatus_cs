@@ -1,0 +1,44 @@
+<odoo>
+	<data>
+		<record id="view_import_wiz_form" model="ir.ui.view">
+			<field name="name">wiz.import.form</field>
+			<field name="model">wiz.import</field>
+			<field name="arch" type="xml">
+				<form>
+					<h1>Please select a file which extension is .xls or .xlsx</h1>
+					<group>
+						<field name="import_table" widget="radio" options="{'horizontal': true}"/>
+					</group>
+					<group>
+						<field name="data_sheet" required="1"/>
+					</group>
+					<footer>
+						<button name="upload_level1_data" type="object" string="Level 1 Import"
+								attrs="{'invisible': [('import_table', '!=','sia_level1')]}" class="btn-default" />
+						<button name="upload_level2_data" type="object" string="Level 2 Import"
+								attrs="{'invisible': [('import_table', '!=','sia_level2')]}" class="btn-default" />
+						<button name="upload_level3_data" type="object" string="Level 3 Import"
+								attrs="{'invisible': [('import_table', '!=','sia_level3')]}" class="btn-default" />
+						<button string="Cancel" class="btn-default" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_import_wiz"
+			model="ir.actions.act_window">
+			<field name="name">Data Import Wizard</field>
+			<field name="res_model">wiz.import</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_import_wiz_form" />
+			<field name="target">new</field>
+		</record>
+
+
+		<!-- Import Menu -->
+        <menuitem id="ulatus_data_import_menu" parent="menu_ulatus_root_master" sequence="21" name="Data Import"/>
+		<menuitem id="menuitem_import" sequence="1" name="Import" action="action_import_wiz" parent="ulatus_data_import_menu"/>
+
+	</data>
+</odoo>

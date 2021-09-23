@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="sale.mt_order_confirmed" model="mail.message.subtype">
+            <field name="description">ASN confirmed</field>
+        </record>
+
+<!--        <record id="mail_template_quotation_confirmation" model="mail.template">-->
+<!--            <field name="name">Ulatus: Quotation Conformation</field>-->
+<!--            <field name="model_id" ref="ulatus_cs.model_sale_order"/>-->
+<!--            <field name="subject">${object.name}</field>-->
+<!--            <field name="email_from">-->
+<!--                ${('&lt;%s&gt;' % (object.env.user.company_id.email or object.env.user.email or user.email)) | safe}-->
+<!--            </field>-->
+<!--            <field name="email_to">${object.partner_id.email | safe}</field>-->
+<!--            <field name="body_html" type="html">-->
+<!--                <div style="margin: 0px; padding: 0px;">-->
+<!--                    <p style="margin: 0px; padding: 0px; font-size: 13px;">-->
+<!--                        % set doc_name = 'quotation'-->
+<!--                        Dear ${object.partner_id.name}-->
+<!--                        <br /><br />-->
+<!--                        Please click on this button to validate-->
+<!--                        the ${doc_name} <strong>${object.name}</strong>.-->
+<!--                        <br /><br />-->
+<!--                        <a href="${'delivery_url' in ctx and ctx['delivery_url'] or ''}"-->
+<!--                           style="background-color:#875a7b; padding:8px 16px 8px 16px;-->
+<!--                               text-decoration:none; color:#fff;border-radius:5px;font-size:13px">-->
+<!--                            Accept/Revise Quotation-->
+<!--                        </a>-->
+<!--                        <br /><br />-->
+<!--                        Thanks,-->
+<!--                        <br/><br/>-->
+<!--                        Ulatus Team-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--            </field>-->
+<!--            <field name="lang">${object.partner_id.lang}</field>-->
+<!--            <field name="user_signature" eval="False"/>-->
+<!--            <field name="auto_delete" eval="False"/>-->
+<!--        </record>-->
+
+<!--        <record id="mail_template_send_quote_pending_reminder_to_client" model="mail.template">-->
+<!--            <field name="name">Ulatus: Send Quotation Pending reminder to Client</field>-->
+<!--            <field name="model_id" ref="ulatus_cs.model_sale_order"/>-->
+<!--            <field name="subject">${object.name}</field>-->
+<!--            <field name="email_from">-->
+<!--                ${('&lt;%s&gt;' % (object.env.user.company_id.email or object.env.user.email or user.email)) | safe}-->
+<!--            </field>-->
+<!--            <field name="email_to">${object.partner_id.email | safe}</field>-->
+<!--            <field name="body_html" type="html">-->
+<!--                <table border="0" cellpadding="0" cellspacing="0"-->
+<!--                       style="padding: 50px 50px 50px 50px; background-color: #F1F1F1; color: #454748; width: 100%; border-collapse:separate;">-->
+<!--                    <tr>-->
+<!--                        <td align="left" style="min-width: 590px;font-size: 15px;">-->
+<!--                            Dear,<br/>-->
+<!--                            <span style="font-size: 15px;">-->
+<!--                                ${object.partner_id.name | safe}-->
+<!--                            </span>-->
+
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td align="left" style="min-width: 590px;font-size: 15px;">-->
+<!--                            <p>Please check Quotation Number ${object.name}-->
+<!--                                is pending for confirmation.</p>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td align="left" style="min-width: 590px;">-->
+<!--                            <a href="${'delivery_url' in ctx and ctx['delivery_url'] or ''}"-->
+<!--                               style="background-color:#875a7b; padding:8px 16px 8px 16px;-->
+<!--                               text-decoration:none; color:#fff;border-radius:5px;font-size:13px">-->
+<!--                                View Pending Quotation-->
+<!--                            </a>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <br/>-->
+<!--                    Thanks,-->
+<!--                    <br/>-->
+<!--                    &#45;&#45;<br/>Ulatus Team-->
+<!--                </table>-->
+<!--            </field>-->
+<!--            <field name="lang">${object.partner_id.lang}</field>-->
+<!--            <field name="user_signature" eval="False"/>-->
+<!--            <field name="auto_delete" eval="False"/>-->
+<!--        </record>-->
+
+<!--        <record id="mail_template_send_revise_quotation" model="mail.template">-->
+<!--            <field name="name">Ulatus: Quotation For Revision</field>-->
+<!--            <field name="model_id" ref="ulatus_cs.model_sale_order"/>-->
+<!--            <field name="subject">${object.name}</field>-->
+<!--            <field name="email_from">-->
+<!--                ${('&lt;%s&gt;' % (object.env.user.company_id.email or object.env.user.email or user.email)) | safe}-->
+<!--            </field>-->
+<!--            <field name="email_to">${object.partner_id.email | safe}</field>-->
+<!--            <field name="body_html" type="html">-->
+<!--                <div style="margin: 0px; padding: 0px;">-->
+<!--                    <p style="margin: 0px; padding: 0px; font-size: 13px;">-->
+<!--                        % set doc_name = 'quotation'-->
+<!--                        Dear ${object.partner_id.name}-->
+<!--                        <br /><br />-->
+<!--                        Please click on this button to validate the Revised-->
+<!--                        ${doc_name} <strong>${object.name}</strong>.-->
+<!--                        <br /><br />-->
+<!--                        <a href="${'delivery_url' in ctx and ctx['delivery_url'] or ''}"-->
+<!--                           style="background-color:#875a7b; padding:8px 16px 8px 16px;-->
+<!--                               text-decoration:none; color:#fff;border-radius:5px;font-size:13px">-->
+<!--                            Accept/Revise Quotation-->
+<!--                        </a>-->
+<!--                        <br /><br />-->
+<!--                        Thanks,-->
+<!--                        <br/><br/>-->
+<!--                        Ulatus Team-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--            </field>-->
+<!--            <field name="lang">${object.partner_id.lang}</field>-->
+<!--            <field name="user_signature" eval="False"/>-->
+<!--            <field name="auto_delete" eval="False"/>-->
+<!--        </record>-->
+
+<!--&lt;!&ndash;        Inquiry details mail template to CS&ndash;&gt;-->
+<!--        <record id="mail_template_inquiry_details_mail_to_cs" model="mail.template">-->
+<!--            <field name="name">Ulatus: Inquiry Details Mail to CS</field>-->
+<!--            <field name="model_id" ref="ulatus_cs.model_sale_order"/>-->
+<!--            <field name="subject">${ctx['subject'] or " "}</field>-->
+<!--            <field name="email_from">-->
+<!--                ${ctx['email_from'] | safe}-->
+<!--            </field>-->
+<!--            <field name="email_to">${ctx['cs_email_id'] or " "}</field>-->
+<!--            <field name="body_html"><![CDATA[-->
+<!--            <div style="margin: 0px; padding: 0px;">-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>Personal Details<br /></p>-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>Membership ID : ${object.mem_id.name or " "}<br /></p>-->
+<!--            <p>Name[English] : ${object.partner_id.name or " "}<br /></p>-->
+<!--            <p>Email : ${ctx['email_from'] or " "}<br /></p>-->
+<!--            </p>-->
+<!--                % if object.partner_id.alternate_email-->
+<!--                    Alternate Email Address : ${object.partner_id.alternate_email}<br />-->
+<!--                % endif-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                % if object.partner_id.country_id-->
+<!--                    Country : ${object.partner_id.country_id.name}<br />-->
+<!--                % endif-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                % if object.partner_id.mobile:-->
+<!--                    Tel. Number: ${object.partner_id.mobile}-->
+<!--                % endif-->
+<!--            </p>-->
+<!--            <br />-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>Service Details<br /></p>-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>Source Language : ${object.source_lang_id.name or " "}<br /></p>-->
+<!--            <p>Target Languages : ${ctx['target_lang'] or " "}<br /></p>-->
+<!--            <p>Client Deadlines (GMT) : ${object.client_deadline or " "}<br /></p>-->
+<!--            <p>-->
+<!--                % if object.instruction_line:-->
+<!--                    Client Instructions :-->
+<!--                    % for row in object.instruction_line:-->
+<!--                        <li>${row.name}</li>-->
+<!--                    % endfor-->
+<!--                % endif-->
+<!--            </p>-->
+<!--            <br />-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>Files<br /></p>-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>-->
+<!--                % if object.translation_file_line:-->
+<!--                    Files for Editing/Translation :-->
+<!--                    % for row in object.translation_file_line:-->
+<!--                        <li>${row.name}</li>-->
+<!--                    % endfor-->
+<!--                % endif-->
+<!--            </p>-->
+<!--            <br />-->
+<!--            <p>-->
+<!--                % if object.refrence_file_line:-->
+<!--                    Files for Reference :-->
+<!--                    % for row in object.refrence_file_line:-->
+<!--                        <li>${row.name}</li>-->
+<!--                    % endfor-->
+<!--                % endif-->
+<!--            </p>-->
+<!--            <br />-->
+<!--            <p>****************************************************************************************<br /></p>-->
+<!--            <p>IP Address : ${object.ip_address or " "}<br /></p>-->
+<!--            <p>Browser : ${object.browser or " "}<br /></p>-->
+<!--            <p>Country as per IP Address : ${object.country or " "}<br /></p>-->
+<!--            <p>****************************************************************************************</p>-->
+<!--            <br /><br />-->
+<!--            <p>Thanks,</p>-->
+<!--            <br/><br/>-->
+<!--            <p>Ulatus Team</p>-->
+<!--            </div>-->
+<!--            ]]>-->
+<!--            </field>-->
+<!--            <field name="lang">${object.partner_id.lang}</field>-->
+<!--            <field name="user_signature" eval="False"/>-->
+<!--            <field name="auto_delete" eval="False"/>-->
+<!--        </record>-->
+    </data>
+</odoo>

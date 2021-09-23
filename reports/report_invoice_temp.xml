@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--    <report
+       id="action_report_invoice"
+       string="Download Invoice"
+       model="account.invoice"
+       report_type="qweb-pdf"
+       file="ulatus_cs.report_invoice_templat"
+       name="ulatus_cs.report_invoice_templat"/>-->
+<!--       attachment="(object.state in ('open','in_payment','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"-->
+<!--       print_report_name="(object._get_report_base_filename())"/>-->
+</odoo>

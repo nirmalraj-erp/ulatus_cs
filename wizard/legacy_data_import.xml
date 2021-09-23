@@ -1,0 +1,71 @@
+<odoo>
+	<data>
+		<record id="view_legacy_data_import_form" model="ir.ui.view">
+			<field name="name">legacy.data.import.form</field>
+			<field name="model">legacy.data.import</field>
+			<field name="arch" type="xml">
+				<form>
+					<h1>Please select a file which extension is .xls or .xlsx</h1>
+					<group>
+						<field name="import_data_type" widget="radio" />
+						<field name="client_type" widget="radio" options="{'horizontal': true}"
+							attrs="{'invisible': [('import_data_type', '!=','client_preferences')],
+									'required': [('import_data_type', '=','client_preferences')]}"/>
+					</group>
+					<group>
+						<field name="sheet_data"
+							   attrs="{'invisible': [('import_data_type', 'not in', ['mem_id', 'client_type', 'client_preferences', 'inquiry'])],
+								'required': [('import_data_type', 'not in', ['quotation', 'asn', 'update_asn_seq', 'link_original_n_rr_asn', 'update_active_org_in_client', 'update_org_in_inquiries', 'update_org_in_quotations', 'import_bi_report_data'])]}"/>
+					</group>
+					<footer>
+						<button name="upload_mem_id" type="object" string="Import Membership ID"
+								attrs="{'invisible': [('import_data_type', '!=','mem_id')]}" class="btn-default" />
+						<button name="upload_client_type" type="object" string="Import Client Type"
+								attrs="{'invisible': [('import_data_type', '!=','client_type')]}" class="btn-default" />
+						<button name="upload_client_preferences" type="object" string="Import Client Preferences"
+								attrs="{'invisible': [('import_data_type', '!=','client_preferences')]}"
+								class="btn-default" />
+
+						<button name="upload_inquiries" type="object" string="Import Inquiries"
+								attrs="{'invisible': [('import_data_type', '!=','inquiry')]}" class="btn-default" />
+						<button name="create_quotations" type="object" string="Create Quotations"
+								attrs="{'invisible': [('import_data_type', '!=','quotation')]}" class="btn-default" />
+						<button name="create_asn" type="object" string="Create Assignments"
+								attrs="{'invisible': [('import_data_type', '!=','asn')]}" class="btn-default" />
+						<button name="link_original_n_rr_asn" type="object" string="Link Original and RR ASN"
+								attrs="{'invisible': [('import_data_type', '!=','link_original_n_rr_asn')]}"
+								class="btn-default" />
+						<button name="update_asn_seq" type="object" string="Update ASN Sequence"
+								attrs="{'invisible': [('import_data_type', '!=','update_asn_seq')]}"
+								class="btn-default" />
+
+						<button name="update_active_org_in_client" type="object" string="Update Active Org in Client"
+								attrs="{'invisible': [('import_data_type', '!=','update_active_org_in_client')]}"
+								class="btn-default"/>
+						<button name="update_org_in_inquiries" type="object" string="Update Org in Inquiries"
+								attrs="{'invisible': [('import_data_type', '!=','update_org_in_inquiries')]}"
+								class="btn-default"/>
+						<button name="update_org_in_quotations" type="object" string="Update Org in Quotations"
+								attrs="{'invisible': [('import_data_type', '!=','update_org_in_quotations')]}"
+								class="btn-default"/>
+						<button name="import_bi_report_data" type="object" string="Import BI Report Data"
+								attrs="{'invisible': [('import_data_type', '!=','import_bi_report_data')]}"
+								class="btn-default"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_import_legacy_data_wiz" model="ir.actions.act_window">
+			<field name="name">Data Import Wizard</field>
+			<field name="res_model">legacy.data.import</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_legacy_data_import_form" />
+			<field name="target">new</field>
+		</record>
+
+		<menuitem id="menuitem_legacy_data_import" sequence="2" name="Import Legacy Data" action="action_import_legacy_data_wiz" parent="ulatus_data_import_menu"/>
+	</data>
+</odoo>
+

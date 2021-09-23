@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_master_tree_view" model="ir.ui.view">
+            <field name="name">product.tree.view</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                    <field name="translation_level_ids" widget="many2many_tags"
+                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                    <field name="addons_ids" widget="many2many_tags"
+                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                           domain="[('addons_service_bool','=', True)]"/>
+                    <field name="static_content_in_email"/>
+                    <field name="addons_service_bool" invisible="1"/>
+                    <field name="product_bool" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Product Action View -->
+        <record id="cs_product_normal_action" model="ir.actions.act_window">
+            <field name="name">Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree</field>
+            <field name="view_type">form</field>
+            <field name="context">{"search_default_filter_to_sell":1,
+                                   'default_type':'service',
+                                   'default_product_bool':True}</field>
+            <field name="domain">[('product_bool', '=', True)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Product
+                </p>
+            </field>
+        </record>
+
+        <record id="cs_product_normal_action_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="product_master_tree_view"/>
+            <field name="act_window_id" ref="cs_product_normal_action"/>
+        </record>
+
+        <menuitem id="ulatus_product_menu" sequence="2" action="cs_product_normal_action" 
+            parent="menu_ulatus_services_master" name="Product Master"/>
+
+        <menuitem id="ulatus_product_menu" sequence="3" action="cs_product_normal_action" 
+            parent="menu_ulatus_fees_master" name="Product"/>
+
+    </data>
+</odoo>

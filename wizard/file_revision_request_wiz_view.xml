@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_parent_asn_hold_message" model="ir.ui.view">
+            <field name="name">asn.hold.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Hold Immediate Warning">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Do you want to On-Hold this ASN..?
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="note" nolabel="1" placeholder="Add reason here..." required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="hold_process" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_parent_asn_offhold_message" model="ir.ui.view">
+            <field name="name">asn.offhold.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Hold Immediate Warning">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Do you want to Off-Hold this ASN..?
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="note" nolabel="1" placeholder="Add reason here..." required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="off_hold_process" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_cancel_quotation_message" model="ir.ui.view">
+            <field name="name">quotation.cancel.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Cancel Quotation">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3><field name="wiz_message" readonly="1"/></h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="rejection_reason_id" required="1" domain="[('type','=', context.get('reason_type'))]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="cancel_process" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="quotation_revision_reason_wiz_form_view" model="ir.ui.view">
+			<field name="name">quotation.revision.reason.wiz.form</field>
+			<field name="model">file.revision.request.wiz</field>
+			<field name="arch" type="xml">
+				<form>
+					<script>
+						$(document).ready(function(){
+						$('.close').css({'display': 'none'});
+						});
+					</script>
+					<strong class="fa fa-info-circle" style="font-size:24px">
+						Give a Revision Request for this Quotation
+					</strong>
+					<group>
+						<group>
+							<field name="note" nolabel="1" placeholder="Add reason here..." required="1"/>
+							<field name="parent_asn_id" invisible="1"/>
+						</group>
+					</group>
+					<footer>
+						<button name="quotation_revision_request" string="Submit" type="object"
+								class="oe_highlight" />
+						<button string="Cancel" class="btn-default"  special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+        <record id="add_reference_file_wiz_form_view" model="ir.ui.view">
+            <field name="name">add.reference.file.wiz.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Add a reference file">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            We are here to assist you, please upload reference file
+                        </h3>
+                    </group>
+                    <group>
+                        <field name="file_revision_ids" string="Upload Files" widget="many2many_binary"
+                               colspan="2" placeholder="Upload Files"  required="1"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="note" nolabel="1"
+                                   placeholder="Enter details about reference file here..." required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="add_reference_file" string="Submit" type="object"
+                                class="oe_highlight"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_add_instruction_wiz" model="ir.ui.view">
+            <field name="name">add.instruction.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Add instruction">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Add Instruction
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="note" nolabel="1" placeholder="Add Instruction here..."
+                                   string="Reason" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="add_instruction" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_request_for_deadline_wiz" model="ir.ui.view">
+            <field name="name">request.for.deadline.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Request a revision in delivery deadline">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Deadline Date
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="deadline_date" options="{'datepicker': {'disable_past_dates': true}}" nolabel="1" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="update_delivery_deadline" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_client_response_wiz" model="ir.ui.view">
+            <field name="name">client.response.wiz.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Client Response">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Add Client Response
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="note" nolabel="1" placeholder="Add Client response here..."
+                                   string="Reason" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="client_response" string="Submit" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_change_currency_wiz" model="ir.ui.view">
+            <field name="name">change.currency.wiz.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Change Currency">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Please select a currency
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="currency_id" nolabel="1" placeholder="Select Currency"
+                                   domain="[('id','!=', so_currency_id)]"
+                                   string="Currency" required="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="so_currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="change_currency" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_change_organization_wiz" model="ir.ui.view">
+            <field name="name">change.organization.wiz.form</field>
+            <field name="model">file.revision.request.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Change Organization">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <group>
+                        <h3>
+                            Please select a organization
+                        </h3>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="organization_id" nolabel="1" placeholder="Select Organization" context="{'is_company':True,'partner_id':partner_id,'email':True}"
+                                   string="Organization" required="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="partner_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="change_organization" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default"  special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

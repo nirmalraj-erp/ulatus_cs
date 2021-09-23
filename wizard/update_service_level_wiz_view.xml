@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="update_service_level_wiz_form_view" model="ir.ui.view">
+            <field name="name">update.service.level.wiz.form</field>
+            <field name="model">update.service.level.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Add Translation Level &amp; Recommended">
+                    <group>
+                        <field name="service_level_wiz_line" nolabel="1">
+                            <tree editable="bottom">
+<!--                                <field name="source_lang_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>-->
+<!--                                <field name="target_lang_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>-->
+                                <field name="service_level_id" string="Translation Level" required="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" context="{'product_id': context.get('product_id', False)}"/>
+                                <field name="visible_to_client" invisible="1"/>
+                                <field name="reccommend" attrs="{'readonly':[('visible_to_client','!=', True)]}"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="update_service_level" string="Confirm" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_service_level_wiz" model="ir.actions.act_window">
+            <field name="name">Add Translation Level</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">update.service.level.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="update_service_level_wiz_form_view"/>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

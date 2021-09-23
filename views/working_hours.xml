@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+<!--        Non-Working Days tree view-->
+        <record id="working_hours_tree_view" model="ir.ui.view">
+            <field name="name">working.hours.tree</field>
+            <field name="model">working.hours</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="year"/>
+                </tree>
+            </field>
+        </record>
+
+<!--        Non-Working Days form view-->
+        <record id="working_hours_form_view" model="ir.ui.view">
+            <field name="name">working.hours.form</field>
+            <field name="model">working.hours</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "active"}'/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="year"/>
+                            <h1>
+                                <field name="year" required="1" placeholder="eg. 2020"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="working_hrs" string="Working Hours">
+                                <label for="start_hour"/>
+                                <div class="o_row">
+                                    <field name="start_hour" placeholder="Hour" required="1" style="width:5rem;"/>
+                                    :
+                                    <field name="start_minute" placeholder="Minute" required="1" style="width:5rem;"/> UTC
+                                </div>
+                                <label for="end_hour"/>
+                                <div class="o_row">
+                                    <field name="end_hour" placeholder="Hour" required="1" style="width:5rem;"/>
+                                    :
+                                    <field name="end_minute" placeholder="Minute" required="1" style="width:5rem;"/> UTC
+                                </div>
+                            </group>
+                            <group name="deadline_revise" string="Revise Deadline">
+                                <field name="deadline_revise_percentage"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Non-Working Days">
+                                <field name="non_working_days_line">
+                                    <tree editable="bottom">
+                                        <field name="occ_date" required="1"/>
+                                        <field name="hour_day" required="1"/>
+                                        <field name="name" required="1"/>
+                                        <field name="working_hours_id" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="occ_date" required="1"/>
+                                                <field name="hour_day" required="1"/>
+                                                <field name="name" required="1"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+<!--        Non-Working Days action-->
+        <record id="action_working_hours_master" model="ir.actions.act_window">
+            <field name="name">Working Hours</field>
+            <field name="res_model">working.hours</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Menu Items-->
+
+        <menuitem id="non_working_days_menu" sequence="7" action="action_working_hours_master" 
+            parent="menu_ulatus_system_master" name="Working Hours"/>
+
+    </data>
+</odoo>

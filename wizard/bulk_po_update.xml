@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form view for Bulk PO Update - Monthly    -->
+        <record id="bulk_po_update_form" model="ir.ui.view">
+            <field name="name">Bulk PO Update</field>
+            <field name="model">bulk.po.update</field>
+            <field name="arch" type="xml">
+                <form string="Upload File">
+                    <p class="oe_grey">Import the excel file with the list of ASNs to update PO#.<br/>
+                        <b>Note:</b> Please follow the below nomenclature for sheet names and column names
+                        <br/><br/>
+                        <b><u>Sheet Nomenclature</u></b><br/>
+                        <b>
+                            Sheet 1 - po_update
+                        </b>
+                        <br/><br/>
+                        <b><u>Column Nomenclature</u></b><br/>
+                        <b>
+                            Column A. asn_no<br/>
+                            Column B. po_number
+                        </b>
+                    </p>
+                    <field name="upload_file" required="1"/>
+                    <footer>
+                        <button name="import_bulk_po" string="Update PO" type="object"
+                                class="btn btn-outline-info"/>
+                        <button string="Cancel" class="btn btn-outline-dark" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!-- Action for Bulk PO Update - Monthly  -->
+        <record id="action_bulk_po_update" model="ir.actions.act_window">
+           <field name="name">Bulk PO# Update</field>
+           <field name="res_model">bulk.po.update</field>
+           <field name="view_mode">form</field>
+           <field name="target">new</field>
+        </record>
+
+        <!-- Menu for Bulk PO update - Monthly  -->
+        <menuitem id="menu_bulk_po"
+                  name="Bulk PO update"
+                  parent="monthly_group"
+                  sequence="4"
+                  action="action_bulk_po_update"/>
+
+    </data>
+</odoo>

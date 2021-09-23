@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+<!--        <record model="res.users" id="base.default_user">-->
+<!--            <field name="tz">GMT</field>-->
+<!--            <field name="groups_id" eval="[(4,0, [ref('ulatus_cs.group_cs_user'), ref('base.group_multi_currency')])]"/>-->
+<!--        </record>-->
+
+<!--        <record model="res.users" id="base.template_portal_user_id">-->
+<!--            <field name="tz">GMT</field>-->
+<!--            &lt;!&ndash; <field name="groups_id" eval="[(4,ref('ulatus_cs.group_cs_user'))]"/> &ndash;&gt;-->
+<!--        </record>-->
+    </data>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="update_po_number" model="ir.ui.view">
+            <field name="name">Update PO Number</field>
+            <field name="model">update.po.number</field>
+            <field name="arch" type="xml">
+              <form string="Update PO Number">
+                  <separator string="Invoice Edit - Change PO#"/>
+                  <group>
+                      <group>
+                          <field name="new_po" string="New PO#"/>
+                      </group>
+                  </group>
+                  <footer>
+                      <button name="update_po" string="_Apply" type="object" class="btn-primary"/>
+                      <button string="Cancel" class="btn-secondary" special="cancel" />
+                  </footer>
+              </form>
+            </field>
+        </record>
+
+        <record id="action_view_update_po_number" model="ir.actions.act_window">
+            <field name="name">Update PO Number</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">update.po.number</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="update_po_number"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

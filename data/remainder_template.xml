@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inheriting Due date remainder details in Company Master-->
+    <record id="res_company_form_inherit_id" model="ir.ui.view">
+        <field name="name">res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[1]/group" position="inside">
+                <group string="Due Date Remainder">
+                    <field name="due_remainder_mail"/>
+                    <field name="no_of_days"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Remainder Email template -->
+<!--   <record id="remainder_mail_template" model="mail.template">-->
+<!--       <field name="name">Remainder Mail Template</field>-->
+<!--       <field name="model_id" ref="account.model_account_invoice"/>-->
+<!--       <field name="email_from">${(object.company_id.email) |safe}</field>-->
+<!--       <field name="email_to" >${object.partner_id.email}</field>-->
+<!--       <field name="subject">Remainder ${object.number or 'n/a' }</field>-->
+<!--       <field name="auto_delete" eval="True"/>-->
+<!--       <field name="lang">${object.partner_id.lang}</field>-->
+<!--       <field name="body_html"><![CDATA[-->
+<!--            <p>Hello</p>-->
+
+<!--            <br/>-->
+
+<!--            <p> Dear ${object.partner_id.name} % if object.partner_id.parent_id: (${object.partner_id.parent_id.name}) % endif-->
+<!--                Here is your % if object.number: invoice ${object.number} % else: invoice %endif % if object.origin: (with reference: ${object.origin}) % endif-->
+<!--                amounting in ${format_amount(object.amount_total, object.currency_id)} from ${object.company_id.name}. % if object.state=='paid':-->
+<!--                This invoice is already paid. % else: Please remit payment at your earliest convenience. % endif-->
+
+
+<!--                Do not hesitate to contact us if you have any question. </p>-->
+<!--            <br/>-->
+<!--             ]]>-->
+<!--       </field>-->
+<!--   </record>-->
+
+
+</odoo>

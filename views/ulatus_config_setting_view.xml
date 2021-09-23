@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Ulatus Configurations Setting Form View -->
+
+        <record id="ulatus_config_setting_form_view" model="ir.ui.view">
+            <field name="name">Ulatus Settings</field>
+            <field name="model">ulatus.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="Ulatus Configuration" class="oe_form_configuration o_base_settings">
+                    <sheet>
+                    <div class="o_control_panel">
+                        <div class="o_panel">
+                            <div class="text-primary" style="font-size:25px;">Global Settings</div>
+                        </div>
+                        <header>
+                            <button string="Save" type="object" name="execute" class="oe_highlight" />
+                            <button string="Discard" type="object" name="cancel" special="cancel" />
+                        </header>
+                    </div>
+                    <group col="2">
+                        <group string="Addons Services Label Configuration">
+                            <!-- <label for="recommended_label" string="Recommended"/> -->
+                            <h5 class="text-primary" style="font-size:16px;">Recommended</h5>
+                            <field name="recommended_label" required="1" string="Label"/>
+                            <field name="recommended_service" required="1" string="Tool Tip"/>
+                            <field name="recommended_tooltip" required="1" string="Recommended Tip"/>
+                            <!-- <label for="value_added_label" string="Value Added"/> -->
+<!--                            <h5 class="text-primary" style="font-size:16px;">Value Added</h5>-->
+<!--                            <field name="value_added_label" required="0" string="Label"/>-->
+<!--                            <field name="value_added_service" required="0" string="Tool Tip"/>-->
+                        </group>
+                        <group string="Project Management Cost">
+                            <h5 class="text-primary" style="font-size:16px;">Costing</h5>
+                            <field name="project_management_cost" required="1"/>
+                            <field name="product_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                   readonly="1" />
+                            <h5 class="text-primary" style="font-size:16px;">File Store Directory</h5>
+                            <field name="home_directory" string="Path" required="1"/>
+<!--                            <h5 class="text-primary" style="font-size:16px;">Question's Validity Date</h5>-->
+<!--                            <field name="question_validity_date" string="Validity Date"-->
+<!--                                       required="0"/>-->
+                        </group>
+                    </group>
+                        <group col="2">
+                            <group string="Terms and Conditions URL">
+                                <field name="terms_conditions" style="width:95%%" nolabel="1" string="Terms and Conditions" required="0"/>
+                            </group>
+                            <group string="Zendesk Script">
+                                <field name="zendesk_script" style="width:95%%" nolabel="1" string="Script" required="0"/>
+                            </group>
+                            <group string="Privacy Policy URL">
+                                <field name="privacy_policy" style="width:95%%" nolabel="1" string="Privacy Policy" required="0"/>
+                            </group>
+                            <group string="Contact Us URL">
+                                <field name="contact_us" style="width:95%" nolabel="1"/>
+                            </group>
+                            <group string="Credit Card/PayPal Payment URL">
+                                <field name="payment_url" style="width:95%%" nolabel="1"/>
+                            </group>
+                            <group string="Delivery Date Note">
+                                <field name="delivery_note" style="width:95%%" nolabel="1"/>
+                            </group>
+                        </group>
+                        <group col="2">
+                            <group string="Report Details">
+                                <field name="header_img" widget="image" class="oe_avatar" required="1" string="Header Logo" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                                <field name="footer_img" widget="image" class="oe_avatar" required="1" string="Footer Logo" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                                <field name="client_img" widget="image" class="oe_avatar" required="1" string="Client Logo" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                            </group>
+                            <group string="Website" name="website_grp">
+                                <field name="date_format"/>
+                                <field name="report_date_format"/>
+                                <field name="time_format"/>
+                            </group>
+                        </group>
+                        <group col="2">
+                            <group string="Other">
+                                <field name="cs_email_id" string="CS Email ID"/>
+                                <field name="py_email_id" string="PY Email ID"/>
+                                <field name="pm_email_id" string="PM Email ID"/>
+                                <field name="business_email_id" string="Business Email ID"/>
+                                <field name="donotrly_email_id" string="Do Not Reply Email ID"/>
+                            </group>
+                            <group string="">
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--Ulatus Configurations Setting Action -->
+        <record id="action_ulatus_config_settings_view" model="ir.actions.act_window">
+            <field name="name">Ulatus Configurations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ulatus.config.settings</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="ulatus_config_setting_form_view" />
+			<field name="view_mode">form</field>
+			<field name="target">inline</field>
+        </record>
+
+        <menuitem id="ulatus_settings" name="Settings" sequence="1"
+            parent="ulatus_configurations" action="action_ulatus_config_settings_view" />
+
+    </data>
+</odoo>

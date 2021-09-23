@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Designation -->
+        <record id="view_designation_master_tree" model="ir.ui.view">
+            <field name="name">hr.job.tree</field>
+            <field name="model">hr.job</field>
+            <field name="arch" type="xml">
+                <tree string="Designation" editable="bottom">
+                    <field name="name"/>
+                    <field name="department_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_designation_master" model="ir.actions.act_window">
+            <field name="name">Designation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem action="action_designation_master" id="menu_hr_designation_master"
+                  parent="menu_ulatus_designation_master" name="Designation" sequence="2" />
+        <!-- department Master View -->
+
+        <record id="view_department_tree" model="ir.ui.view">
+            <field name="name">hr.department.tree</field>
+            <field name="model">hr.department</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" string="Name"/>
+                    <field name="manager_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                    <field name="parent_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_hr_department" model="ir.actions.act_window">
+            <field name="name">Departments</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.department</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem action="action_hr_department" id="menu_hr_department" name="Department"
+                  parent="menu_ulatus_designation_master" sequence="1" />
+                  
+        <!-- Translation Level -->
+        <record id="service_level_tree_view" model="ir.ui.view">
+            <field name="name">service.level.tree</field>
+            <field name="model">service.level</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" required="1"/>
+                    <field name="pm_name" required="1"/>
+                    <field name="note" />
+                    <field name="language_ids" invisible="1" widget="many2many_tags" required="0"/>
+                    <field name="product_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_service_level" model="ir.actions.act_window">
+            <field name="name">Translation Level</field>
+            <field name="res_model">service.level</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="ulatus_service_level_menu" sequence="1" action="action_service_level" parent="menu_ulatus_services_master" name="Translation Level"/>
+        <menuitem id="ulatus_service_level_menu" sequence="1" action="action_service_level" parent="menu_ulatus_fees_master" name="Translation Level"/>
+
+        <!-- Document Type Master Menu-->
+        <record id="view_doc_type_master_tree_view" model="ir.ui.view">
+            <field name="name">doc.type.master.tree</field>
+            <field name="model">doc.type.master</field>
+            <field name="arch" type="xml">
+                <tree string="Document Type Master">
+                    <field name="name"/>
+                    <field name="doc_type_master_line" widget="many2many_tags" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_doc_type_master_form_view" model="ir.ui.view">
+            <field name="name">doc.type.master.form</field>
+            <field name="model">doc.type.master</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="no_file_extension"/>
+                                <field name="filename" invisible="1"/>
+                                <field name="no_file_extension_img" filename="filename"
+                                       attrs="{'invisible': [('no_file_extension','=',False)], 'required': [('no_file_extension','=',True)]}"/>
+                            </group>
+                        </group>
+                        <div class="Buttonright" attrs="{'invisible': [('no_file_extension','=',True)]}">
+                            <button name="%(fine_uploader.action_doc_master_file_uploader)d" string="Upload File(s)"
+                                    type="action" class="oe_highlight oe_edit_only mb-3"
+                                    context="{
+                                        'default_active_id': active_id,
+                                        'default_active_model': active_model,
+                                        'default_field_name': 'doc_type_master_line',
+                                    }"/>
+                        </div>
+                        <field name="doc_type_master_line" attrs="{'invisible': [('no_file_extension','=',True)]}">
+                            <tree editable="bottom" create="0" delete="0">
+                                <field name="file_extension_name" required="1"/>
+                                <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                <field name="datas_fname" invisible="1"/>
+                                <button name="open_confirmation_wiz" help="Delete"
+                                        class="del-cust fa fa-trash-o Buttonright oe_edit_only" type="object"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="file_extension_name"/>
+                                    <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                    <field name="datas" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                    <field name="datas_fname" invisible="1"/>
+                                </group>
+                            </form>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_doc_type_master" model="ir.actions.act_window">
+            <field name="name">File Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">doc.type.master</field>
+            <field name="view_type">form</field>
+        </record>
+
+        <menuitem id="ulatus_doc_type_menu" sequence="2" action="action_doc_type_master" parent="menu_ulatus_system_master" name="File Type"/>
+        <!-- End Client Master-->
+        <record id="view_end_client_tree_view" model="ir.ui.view">
+            <field name="name">end.client.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="End Client" editable="bottom">
+                    <field name="name" string="End Client Name" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_end_client_master" model="ir.actions.act_window">
+            <field name="name">End Client</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{'default_type':'end_client'}</field>
+            <field name="domain">[('type', '=', 'end_client')]</field>
+        </record>
+
+
+        <record id="action_end_client_master_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_end_client_tree_view"/>
+            <field name="act_window_id" ref="action_end_client_master"/>
+        </record>
+
+        <menuitem id="ulatus_end_client_menu" sequence="3" action="action_end_client_master" parent="menu_ulatus_system_master" name="End Client"/>
+        <!-- Fees Master-->
+        <record id="view_fee_master_tree_view" model="ir.ui.view">
+            <field name="name">fee.master.tree</field>
+            <field name="model">fee.master</field>
+            <field name="arch" type="xml">
+                <tree string="Fees" editable="bottom">
+                    <field name="product_id" domain="[('product_bool', '=', True)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="translation_level_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1" context="{'product_id': product_id}"/>
+                    <field name="membership_id"
+                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                    <field name="organization_id" invisible="1" domain="[('type', '!=', 'end_client'),('is_portal', '=', True),('is_company', '=', True)]"
+                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+
+                    <field name="end_client_id" domain="[('type', '=', 'end_client')]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                    <field name="priority" required="1"/>
+                    <field name="source_lang_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="target_lang_id" domain="[('id','!=',source_lang_id)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="price" widget='monetary' options="{'currency_field': 'currency_id'}" required="1"/>
+                    <field name="unit_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="0" invisible="1" force_save="1"/>
+                    <field name="unit_count" invisible="1"/>
+                    <button name="open_form" string="History" type="object" class="btn-primary"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fee_master_form_view" model="ir.ui.view">
+            <field name="name">fee.master.form</field>
+            <field name="model">fee.master</field>
+            <field name="arch" type="xml">
+                <form string="Fees" create="0" delete="0" edit="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="membership_id"
+                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                <field name="organization_id" invisible="1" domain="[('type', '!=', 'end_client'),('is_portal', '=', True),('is_company', '=', True)]"
+                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+
+                                <field name="end_client_id" domain="[('type', '=', 'end_client')]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                <field name="product_id" domain="[('product_bool', '=', True)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="translation_level_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="priority" required="1"/>
+                            </group>
+                            <group>
+                                
+                                <field name="source_lang_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="target_lang_id" domain="[('id','!=',source_lang_id)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="price" widget='monetary' options="{'currency_field': 'currency_id'}" required="1"/>
+                                <field name="unit_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="0" invisible="1" force_save="1"/>
+                                <field name="unit_count" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <!-- <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="activity_ids" widget="mail_activity" /> -->
+                        <field name="message_ids" widget="mail_thread" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_fees_master" model="ir.actions.act_window">
+            <field name="name">Fee</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">fee.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="ulatus_fees_menu" sequence="5" action="action_fees_master" 
+            parent="menu_ulatus_fees_master" name="Fee"/>
+
+        <!-- Add-ons Fees Master-->
+        <record id="view_addons_fee_master_tree_view" model="ir.ui.view">
+            <field name="name">addons.fee.master.tree</field>
+            <field name="model">addons.fee.master</field>
+            <field name="arch" type="xml">
+                <tree string="Add-ons Fees" editable="bottom">
+                    <field name="product_id" domain="[('product_bool', '=', True)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="addons_id" domain="[('addons_service_bool', '=', True)]" required="1"  options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" context="{'product_id': product_id}"/>
+                    <field name="membership_id"
+                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                    <field name="organization_id" invisible="1" domain="[('type', '!=', 'end_client'),
+                                ('is_portal', '=', True),('is_company', '=', True)]"
+                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                    <field name="end_client_id" domain="[('type', '=', 'end_client')]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                    <field name="priority" required="1"/>
+                    <field name="source_lang_id" required="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                    <field name="target_lang_id" required="1" domain="[('id','!=',source_lang_id)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                    <field name="unit_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                    <field name="price" widget='monetary' options="{'currency_field': 'currency_id'}" required="1"/>
+                    <button name="open_form" string="History" type="object" class="btn-primary"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_addons_fee_master_form_view" model="ir.ui.view">
+            <field name="name">addons.fee.master.tree</field>
+            <field name="model">addons.fee.master</field>
+            <field name="arch" type="xml">
+                <form string="Add-ons Fees" create="0" delete="0" edit="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id" domain="[('product_bool', '=', True)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="addons_id" domain="[('addons_service_bool', '=', True)]" required="1"  options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                <field name="membership_id" 
+                                    options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                <field name="organization_id" invisible="1" domain="[('type', '!=', 'end_client'),
+                                            ('is_portal', '=', True),('is_company', '=', True)]"
+                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                <field name="end_client_id" domain="[('type', '=', 'end_client')]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                            </group>
+                            <group>
+                                <field name="priority" required="1"/>
+                                <field name="source_lang_id" invisible="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                                <field name="target_lang_id" invisible="1" domain="[('id','!=',source_lang_id)]" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                <field name="unit_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="0" invisible="1" force_save="1"/>
+                                <field name="currency_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                <field name="price" widget='monetary' options="{'currency_field': 'currency_id'}" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <!-- <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="activity_ids" widget="mail_activity" /> -->
+                        <field name="message_ids" widget="mail_thread" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_addons_fees_master" model="ir.actions.act_window">
+            <field name="name">Add-Ons Fee</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">addons.fee.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="ulatus_addons_fees_menu" sequence="6" action="action_addons_fees_master" parent="menu_ulatus_fees_master" name="Add-ons Fee"/>
+        <!-- Document Unit Master-->
+        <record id="view_crimson_service_unit_tree_view" model="ir.ui.view">
+            <field name="name">service.unit.tree</field>
+            <field name="model">service.unit</field>
+            <field name="arch" type="xml">
+                <tree string="Service Unit Master" editable="bottom">
+                    <field name="name"/>
+                    <field name="service_unit_line" class="text_width" widget="many2many_tags" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_crimson_service_unit_form_view" model="ir.ui.view">
+            <field name="name">service.unit.form</field>
+            <field name="model">service.unit</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="service_unit_line" invisible="1">
+                                <tree editable='bottom'>
+                                    <field name="name" string="FL Fee Structure Unit"/>
+                                    <field name="count"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_crimson_service_unit_action" model="ir.actions.act_window">
+            <field name="name">Document Unit</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">service.unit</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="ulatus_document_unit_master_menu" sequence="4" action="action_crimson_service_unit_action" parent="menu_ulatus_fees_master" name="Document Unit"/>
+        <!-- checkList Master -->
+        <record id="view_checklist_master_tree_view" model="ir.ui.view">
+            <field name="name">checklist.master.tree</field>
+            <field name="model">checklist</field>
+            <field name="arch" type="xml">
+                <tree string="CheckList" editable="bottom">
+                    <field name="name" />
+                    <field name="type" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_checklist_master" model="ir.actions.act_window">
+            <field name="name">Checklist</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">checklist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="ulatus_checklist_menu" sequence="4" action="action_checklist_master" 
+            parent="menu_ulatus_system_master" name="Checklist"/>
+        <!-- FAQ Master View -->
+        <record id="faq_master_tree_view" model="ir.ui.view">
+            <field name="name">faq.master.tree</field>
+            <field name="model">faq.master</field>
+            <field name="arch" type="xml">
+                <tree  editable="bottom">
+                    <field name="quetion"/>
+                    <field name="answer"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_faq_master" model="ir.actions.act_window">
+            <field name="name">FAQ</field>
+            <field name="res_model">faq.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <!-- FAQ Master Menu -->
+        <menuitem id="menu_faq_master" parent="menu_ulatus_root_master" action="action_faq_master" sequence="8" name="FAQ" />
+        
+        <!-- Tax master inherit form view -->
+        <record model="ir.ui.view" id="view_tax_form_inherited">
+            <field name="name">account.tax.form.inherited</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="currency_id" required="1"
+                           options="{'no_open': True, 'no_create': True}"/>
+                </xpath>
+                <xpath expr="//field[@name='children_tax_ids']" position="attributes">
+                    <attribute name="context">{'currency_id':currency_id}</attribute>
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Rejection Reasons Master View -->
+        <record id="rejection_reason_tree_view" model="ir.ui.view">
+            <field name="name">rejection.reason.tree</field>
+            <field name="model">rejection.reason</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="reason" />
+                    <field name="type" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_rejection_reason" model="ir.actions.act_window">
+            <field name="name">Rejection Reason Master</field>
+            <field name="res_model">rejection.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <!-- Rejection Reason Master Menu -->
+        <menuitem id="ulatus_rejection_reason_menu" parent="menu_ulatus_root_master" action="action_rejection_reason" sequence="20" name="Rejection Reason"/>
+        
+        <!-- Subject Area Level 1 -->
+        <record id="subject_industrial_area_level1_tree_view" model="ir.ui.view">
+            <field name="name">subject.industrial.area.level1.tree</field>
+            <field name="model">subject.industrial.area.level1</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" class="text_width"/>
+                    <field name="area_type" class="text_width"/>
+                    <field name="description" class="text_width"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="subject_industrial_area_level1_form_view" model="ir.ui.view">
+            <field name="name">subject.industrial.area.level1.form</field>
+            <field name="model">subject.industrial.area.level1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="area_type"/>
+                            </group>
+                            <group>
+                                <field name="name" placeholder="Level 1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_subject_industrial_area_level1"
+                model="ir.actions.act_window">
+            <field name="name">Subject and Industrial Area Level 1</field>
+            <field name="res_model">subject.industrial.area.level1</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="subject_industrial_area_level1_menu" sequence="1" action="action_subject_industrial_area_level1" name="Subject and Industrial Area Level 1" parent="ulatus_subject_industrial_area" groups="group_cs_manager,group_cs_admin"/>
+
+        <!-- Subject Area Level 2 -->
+        <record model="ir.ui.view" id="subject_industrial_area_level2_search">
+            <field name="name">subject.industrial.area.level2.search</field>
+            <field name="model">subject.industrial.area.level2</field>
+            <field name="arch" type="xml">
+                <search string="Subject and Industrial Area ">
+                    <field name="level2_line"/>
+                    <field name="level1_id"/>
+                    <field name="area_type"/>
+                    <group string="Group By">
+                        <filter name="level1_id" string="Subject and Industrial Area Level-1"
+                                context="{'group_by':'level1_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="subject_industrial_area_level2_tree_view" model="ir.ui.view">
+            <field name="name">subject.industrial.area.level2.tree</field>
+            <field name="model">subject.industrial.area.level2</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="level2_line" class="text_width" widget="many2many_tags"/>
+                    <field name="level1_id" class="text_width"/>
+                    <field name="area_type" class="text_width"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="subject_industrial_area_level2_form_view" model="ir.ui.view">
+            <field name="name">subject.industrial.area.level2.form</field>
+            <field name="model">subject.industrial.area.level2</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="area_type"/>
+                            </group>
+                            <group>
+                                <field name="level1_id" options='{"no_open": True, "no_create": True}'/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Level 2 Line">
+                                <field name="level2_line">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_subject_industrial_area_level2"
+                model="ir.actions.act_window">
+            <field name="name">Subject and Industrial Area Level 2</field>
+            <field name="res_model">subject.industrial.area.level2</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="subject_industrial_area_level2_menu" sequence="2" action="action_subject_industrial_area_level2" name="Subject and Industrial Area Level 2" parent="ulatus_subject_industrial_area" groups="group_cs_manager,group_cs_admin"/>
+
+        <!-- Subject Area Level 3 -->
+        <record model="ir.ui.view" id="subject_industrial_area_level3_search">
+            <field name="name">subject.industrial.area.level3.search</field>
+            <field name="model">subject.industrial.area.level3</field>
+            <field name="arch" type="xml">
+                <search string="Subject and Industrial Area ">
+                    <field name="level3_line"/>
+                    <field name="parent_level2_line_id"/>
+                    <field name="parent_level1_id"/>
+                    <field name="area_type"/>
+                    <group string="Group By">
+                        <filter name="parent_level1_id" string="Subject and Industrial Area Level 1"
+                                context="{'group_by':'parent_level1_id'}"/>
+                        <filter name="parent_level2_line_id" string="Subject and Industrial Area Level 2"
+                                context="{'group_by':'parent_level2_line_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="subject_industrial_area_level3_tree_view" model="ir.ui.view">
+            <field name="name">subject.industrial.area.level3.tree</field>
+            <field name="model">subject.industrial.area.level3</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="level3_line" class="text_width" widget="many2many_tags"
+                           string="SA Level 3"/>
+                    <field name="parent_level2_line_id" class="text_width"/>
+                    <field name="parent_level1_id" class="text_width"/>
+                    <field name="area_type" class="text_width"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="subject_industrial_area_level3_form_view" model="ir.ui.view">
+            <field name="name">subject.industrial.area.level3.form</field>
+            <field name="model">subject.industrial.area.level3</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="area_type"/>
+                            </group>
+                            <group>
+                                <field name="parent_level2_line_id" options='{"no_open": True, "no_create": True}'
+                                       domain="[('level2_id', '!=',False)]"
+                                       placeholder="Level 2"/>
+                            </group>
+                            <group>
+                                <field name="parent_level1_id" force_save="1" readonly='1'
+                                       options='{"no_open": True}'/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Level 3 Line">
+                                <field name="level3_line">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_subject_industrial_area_level3"
+                model="ir.actions.act_window">
+            <field name="name">Subject and Industrial Area Level 3</field>
+            <field name="res_model">subject.industrial.area.level3</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <menuitem id="subject_industrial_area_level3_menu" sequence="3" action="action_subject_industrial_area_level3" name="Subject and Industrial Area Level 3" parent="ulatus_subject_industrial_area" groups="group_cs_manager,group_cs_admin"/>
+
+    </data>
+</odoo>

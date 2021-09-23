@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sent_confirmation_message_form_view" model="ir.ui.view">
+            <field name="name">confirmation.message.form</field>
+            <field name="model">confirmation.message</field>
+            <field name="arch" type="xml">
+                <form string="Message">
+                    <script>
+                        $(document).ready(function(){
+                            $('.close').css({'display': 'none'});
+                            $('.modal-dialog').css({'width': '35%'});
+                        });
+                    </script>
+                        <h5><field name="message" /></h5>
+                        <field name="send_reminder" invisible="1"/>
+                        <field name="is_reminder_sent" invisible="1"/>
+                    <footer>
+                        <button name="sent_confirmation_message" string="Yes" type="object"
+                                class="oe_highlight" attrs="{'invisible':['|',('is_reminder_sent', '=', 1),('send_reminder','!=', True)]}"/>
+						<button string="No" class="btn-default" special="cancel" attrs="{'invisible':['|',('is_reminder_sent', '=', 1),('send_reminder','!=', True)]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel" attrs="{'invisible':[('is_reminder_sent', '=', 0),('send_reminder','=', True)]}" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- INQ PROCESS WIZARD -->
+        <record id="inq_confirmation_wizard" model="ir.ui.view">
+            <field name="name">inq.confirmation.wizard</field>
+            <field name="model">confirmation.message</field>
+            <field name="arch" type="xml">
+                <form string="Message">
+                    <script>
+                        $(document).ready(function(){
+                        $('.close').css({'display': 'none'});
+                        });
+                    </script>
+                    <strong class="fa fa-info-circle" style="font-size:24px">
+                        <field name="message" />
+                    </strong>
+                    <group>
+                        <group>
+                            <field name="mem_id" context="{'mem_ids': context.get('membership_id')}"
+                                   options="{&quot;no_open&quot;: True,
+                                   &quot;no_create&quot;: True}" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="update_memid" string="Yes" type="object"
+                                class="btn-primary"/>
+                        <button name="create_memid" string="No" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+<!--        WARNING MESSAGE WIZARD-->
+        <record id="send_warning_message_wizard" model="ir.ui.view">
+            <field name="name">warning.confirmation.message.form</field>
+            <field name="model">confirmation.message</field>
+            <field name="arch" type="xml">
+                <form string="Warning Message">
+                    <field name="message" readonly="1"/>
+<!--                    <field name="check_deadline" invisible="0"/>-->
+                    <footer>
+						<button string="OK" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

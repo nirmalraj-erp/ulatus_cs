@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_res_lang_tree_inherit" model="ir.ui.view">
+            <field name="name">res.lang.tree</field>
+            <field name="model">res.lang</field>
+            <field name="inherit_id" ref="base.res_lang_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="replace">
+                    <tree string="Languages" editable="bottom" delete="0">
+                        <field name="name" required="1"/>
+                        <field name="initial_code" required="1"/>
+                        <field name="unit_id" required="1"
+                               options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                        <field name="active"/>
+                        <field name="date_format" groups="base.group_no_one"/>
+                        <field name="time_format" groups="base.group_no_one"/>
+                    </tree>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_lang_form_inherit" model="ir.ui.view">
+            <field name="name">res.lang.form</field>
+            <field name="model">res.lang</field>
+            <field name="inherit_id" ref="base.res_lang_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="replace">
+                    <form string="Languages">
+                        <sheet>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                                    <field name="active" widget="boolean_button" options='{"terminology": "active"}'/>
+                                </button>
+                            </div>
+                            <div class="oe_title">
+                                <label for="name" class="oe_edit_only"/>
+                                <h1>
+                                    <field name="name"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="initial_code" required="1"/>
+                                    <field name="unit_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" required="1"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record id="assign_to_others_wiz_form_view" model="ir.ui.view">
+			<field name="name">assign.others.wiz.form</field>
+			<field name="model">assign.others.wiz</field>
+			<field name="arch" type="xml">
+				<form string="Assign Inquiry">
+					<script>
+						$(document).ready(function(){
+						$('.close').css({'display': 'none'});
+						});
+					</script>
+					<strong class="fa fa-info-circle" style="font-size:24px">
+						Assign CS User for an Inquiry
+					</strong>
+					<group>
+						<group>
+							<field name="user_id" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+								   required="1" context="{'workload': True}"/>
+							<field name="inquiry_id" invisible="1"/>
+						</group>
+					</group>
+					<footer>
+						<button name="assign_to_user" string="Assign" type="object"
+								class="oe_highlight" />
+						or
+						<button string="Cancel" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+	</data>
+</odoo>

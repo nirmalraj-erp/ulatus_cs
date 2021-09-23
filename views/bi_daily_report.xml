@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- client inquiry tree view-->
+        <record id="bi_daily_report_tree_view" model="ir.ui.view">
+            <field name="name">bi.daily.report.tree</field>
+            <field name="model">bi.daily.report</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false" default_order="inquiry_date desc">
+                    <field name="mem_id"/>
+                    <field name="inquiry_id"/>
+                    <field name="asn_number"/>
+                    <field name="is_parent_or_child"/>
+                    <field name="assignment_current_status"/>
+                    <field name="inquiry_state"/>
+                    <field name="quote_state"/>
+                    <field name="asn_state"/>
+                    <field name="actual_client_deadline" />
+                    <field name="internal_client_deadline" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="bi_daily_report_form_view" model="ir.ui.view">
+            <field name="name">bi.daily.report.form</field>
+            <field name="model">bi.daily.report</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                Inquiry - <field name="inquiry_id" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="mem_id" readonly="1" />
+                            <field name="client_name" readonly="1" />
+                            <field name="inquiry_date" readonly="1"/>
+                            <field name="client_deadline" readonly="1"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="website_name" readonly="1"/>
+                            <field name="target_lang_ids" readonly="1" widget="many2many_tags" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="inquiry_state" readonly="1"/>
+                            <field name="client_type" readonly="1"/>
+                            <field name="new_client" readonly="1"/>
+                            <field name="assignment_current_status" readonly="1"/>
+                            <field name="service" readonly="1"/>
+                            <field name="is_rr_inquiry" readonly="1"/>
+                        </group>
+
+                        <div class="oe_title">
+                            <h1>
+                                Quotation <field name="inquiry_id" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="actual_client_deadline" readonly="1" />
+                            <field name="internal_client_deadline" readonly="1" />
+                            <field name="area_type" readonly="1" />
+                            <field name="subject_industrial_area_level1_id" readonly="1"/>
+                            <field name="subject_industrial_area_level2_id" readonly="1"/>
+                            <field name="subject_industrial_area_level3_id" readonly="1"/>
+                            <field name="mark_as_special" readonly="1"/>
+                            <field name="quotataion_sent_by" readonly="1"/>
+                            <field name="quote_state" readonly="1"/>
+                            <field name="response_time" readonly="1" />
+                            <field name="organisation_name" readonly="1" />
+                            <field name="non_editable_count" readonly="1" />
+                            <field name="wc_0_49_percent" readonly="1" />
+                            <field name="wc_50_74_percent" readonly="1" />
+                            <field name="wc_75_84_percent" readonly="1" />
+                            <field name="wc_85_94_percent" readonly="1" />
+                            <field name="wc_95_99_percent" readonly="1" />
+                            <field name="wc_100_percent" readonly="1" />
+                            <field name="wc_101_percent" readonly="1" />
+                            <field name="machine_translation" readonly="1" />
+                            <field name="repetitions" readonly="1" />
+                            <field name="client_instructions" readonly="1" />
+                            <field name="project_management_cost" readonly="1" />
+                            <field name="final_rate" readonly="1" />
+                            <field name="po_number" readonly="1" />
+                        </group>
+
+                        <div class="oe_title">
+                            <h1>
+                                ASN <field name="asn_number" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="service_level_id" readonly="1" />
+                            <field name="priority" readonly="1" />
+                            <field name="unit_id" readonly="1" />
+                            <field name="char_count" readonly="1"/>
+                            <field name="asn_state" readonly="1"/>
+                            <field name="gross_fee" readonly="1"/>
+                            <field name="premium_percentage" readonly="1"/>
+                            <field name="premium_amount" readonly="1"/>
+                            <field name="discount_percentage" readonly="1"/>
+                            <field name="discount_amount" readonly="1"/>
+                            <field name="total_tax" readonly="1"/>
+                            <field name="total_fees" readonly="1"/>
+                            <field name="quote_confirmation_date" readonly="1"/>
+                            <field name="asn_delivery_date" readonly="1" />
+                            <field name="asn_confirmed_by" readonly="1"/>
+                            <field name="inv_type" readonly="1"/>
+                            <field name="invoice_create_date" readonly="1"/>
+                            <field name="reject_reason" readonly="1"/>
+                            <field name="reject_date" readonly="1"/>
+                            <field name="is_deadline_met" readonly="1"/>
+                            <field name="functional_testing" readonly="1"/>
+                            <field name="glossary_development" readonly="1"/>
+                            <field name="image_recreation" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Rejected Inquiries Action -->
+        <record id="action_bi_daily_report" model="ir.actions.act_window">
+            <field name="name">BI Daily Report</field>
+            <field name="res_model">bi.daily.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_bi_daily_report_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="bi_daily_report_tree_view"/>
+            <field name="act_window_id" ref="action_bi_daily_report"/>
+        </record>
+
+        <record id="action_bi_daily_report_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="bi_daily_report_form_view"/>
+            <field name="act_window_id" ref="action_bi_daily_report"/>
+        </record>
+
+        <menuitem id="ulatus_bi_daily_report_sub_menu" sequence="6" action="action_bi_daily_report" parent="ulatus_cs_root_menu" name="BI Daily Report"/>
+
+    </data>
+</odoo>

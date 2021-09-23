@@ -1,0 +1,386 @@
+<odoo>
+    <data>
+        <record id="view_quotation_line_details" model="ir.ui.view">
+            <field name="name">sale.order.line.form</field>
+            <field name="model">sale.order.line</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <form string="Quotation Services" create="false" delete="false">
+                    <script>
+                        $(document).ready(function(){
+                            $(".o_form_button_cancel").hide();
+                            $(".o_form_button_save").hide();
+
+                            $('#spc_btn_id').click(function() {
+                                window.history.back();
+                                return;
+                            });
+                        });
+                    </script>
+                    <sheet>
+                        <group col="4" name="header_group">
+                        <field name="source_lang_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                        <field name="target_lang_id" domain="[('id','!=',source_lang_id)]" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                        <field name="unit_id" readonly="1" force_save="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                        <field name="client_deadline" />
+                        <field name="character_count" />
+                        <field name="deadline" />
+                        <field name="check_deadline" invisible="1"/>
+                        <field name="mainfile_count" invisible="1"/>
+                        <field name="referencefile_count" invisible="1"/>
+                        <field name="product_id" invisible="1"/>
+                        <field name="name" invisible="1"/>
+                        <field name="order_id" invisible="1"/>
+                        <field name="update_rec" required="0" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Client File &amp; Instructions" name="client_file_ins">
+                            <separator string="Instructions"/>
+                            <field name="sale_instruction_line" force_save="1">
+                                <tree editable="bottom">
+                                    <field name="name" required="1" attrs="{'readonly': ['|', ('is_original_ins','=',True), ('is_default_ins','=',True)]}"/>
+                                    <field name="mark_reviewed" />
+                                    <field name="send_ins_to_pm"/>
+                                    <field name="is_original_ins" invisible="1"/>
+                                    <field name="is_default_ins" invisible="1"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="name" required="1"/>
+                                            <field name="mark_reviewed"/>
+                                            <field name="send_ins_to_pm"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                            <div class="Buttonright">
+                                    <button name="%(fine_uploader.action_file_uploader)d" string="Upload File(s)"
+                                            type="action" class="fa fa-upload custombtn" style="margin-right:10px"
+                                            context="{
+                                                'default_active_id': active_id,
+                                                'default_active_model': active_model,
+                                                'default_field_name': 'sale_original_file_line',
+                                                'default_so_type': 'quotation',
+                                                'default_file_type': 'client',
+                                            }"
+                                    />
+                            </div>
+                            <separator string="Translation Files"/>
+                            <field name="sale_original_file_line">
+                                <tree editable="bottom" create="0" edit="0" delete="0">
+                                    <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                    <field name="datas" required="1" force_save="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                    <field name="character_count" invisible="1" default="0"/>
+                                    <field name="file_type" invisible="1"/>
+                                    <field name="datas_fname" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <button name="move_to_refrence" help="Move to Reference File" class="fa fa-arrow-right Buttonright" style="font-size:20px;color:green;" type="object"/>
+                                    <button name="open_confirmation_wiz" help="Delete" class="del-cust fa fa-trash-o Buttonright"
+                                            type="object"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                        <field name="datas" required="1" force_save="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                        <field name="character_count" required="1" default="0"/>
+                                        <field name="file_type" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                        <field name="datas_fname" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                            <div class="Buttonright">
+                                    <button name="%(fine_uploader.action_file_uploader)d" string="Upload File(s)"
+                                            type="action" class="fa fa-upload custombtn" style="margin-right:10px"
+                                            context="{
+                                                'default_active_id': active_id,
+                                                'default_active_model': active_model,
+                                                'default_field_name': 'reference_assignment_line',
+                                                'default_so_type': 'quotation',
+                                                'default_file_type': 'refrence',
+                                            }"
+                                    />
+                            </div>
+                            <separator string="Reference Files"/>
+                            <field name="reference_assignment_line">
+                                <tree editable="bottom" create="0" delete="0">
+                                    <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                    <field name="datas" required="1" force_save="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                    <field name="file_type" invisible="1"/>
+                                    <field name="datas_fname" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <button name="open_confirmation_wiz" help="Delete" class="del-cust fa fa-trash-o Buttonright"
+                                            type="object"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                        <field name="datas" required="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                        <field name="file_type" force_save="1" invisible="1"/>
+                                        <field name="datas_fname" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Service &amp; Memsource" name="service_memsource_ins">
+                            <group name="translation_level" string="Translation Level's">
+                                <field name="service_level_line" force_save="1" nolabel="1">
+                                    <tree editable="bottom" create="0" delete="0">
+                                        <field name="service_level_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                        <field name="deadline" options="{'datepicker': {'disable_past_dates': true}}"/>
+                                        <field name="unit_rate" required="1"/>
+                                        <field name="fee" readonly="1" force_save="1"/>
+                                        <field name="visible_to_client" readonly="1" invisible="1"/>
+                                        <field name="reccommend" readonly="1"/>
+                                        <field name="add_translation_level_id" invisible="1"/>
+                                        <field name="sale_service_line_id" invisible="1"/>
+                                        <field name="is_original_service_level" invisible="1"/>
+                                    </tree>
+                                    <form create="0" delete="0">
+                                        <group>
+                                            <group>
+                                                <field name="service_level_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                <field name="deadline"/>
+                                                <field name="unit_rate" required="1"/>
+                                                <field name="fee" readonly="1" force_save="1"/>
+                                                <field name="reccommend" readonly="1"/>
+                                                <field name="sale_service_line_id" invisible="1"/>
+                                                <field name="is_original_service_level" invisible="1"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </group>
+                            <separator string="Add-ons Fee"/>
+                            <field name="addons_fee_line" force_save="1">
+                                <tree editable="bottom">
+                                    <field name="addons_id" required="1"
+                                           domain="[('addons_service_bool', '=', True)]"
+                                           context="{'product_id': context.get('product_id', False)}"
+                                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                    <field name="unit_id" required="1"
+                                           options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                    <field name="no_of_unit" attrs="{'readonly': [('enter_unit_bool','=',False)]}" force_save="1" />
+                                    <field name="price" required="1"/>
+                                    <field name="total_price" readonly="1" force_save="1"/>
+                                    <field name="enter_unit_bool" invisible="1"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="addons_id" required="1" domain="[('addons_service_bool', '=', True)]"
+                                                   options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            <field name="no_of_unit" />
+                                            <field name="price" required="1"/>
+                                            <field name="total_price" readonly="1" force_save="1"/>
+                                            <field name="unit_id" readonly="1" force_save="1"
+                                                   options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        </notebook>
+                        <footer>
+                            <button string="Save" name="action_update_quotation" type="object" style="margin-right:10px"
+                                    class="oe_highlight"/>
+                            <button string="Discard" special="cancel" class="btn-secondary" style="margin-right:10px"
+                                id="spc_btn_id"/>
+<!--                            <a href="javascript: window.history.back()" role="button"-->
+<!--                               class="btn btn-primary oe_highlight">Back</a>-->
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_quotation_revision_request_line_view" model="ir.ui.view">
+            <field name="name">quotation.revision.request.line.form</field>
+            <field name="model">sale.order.line</field>
+            <field name="priority">1001</field>
+            <field name="arch" type="xml">
+                <form string="Quotation Revision Request Services" create="false" delete="false">
+                    <script>
+                        $(document).ready(function(){
+                            $(".o_form_button_cancel").hide();
+                            $(".o_form_button_save").hide();
+
+                            $('#spc_rev_btn_id').click(function() {
+                                window.history.back();
+                                return;
+                            });
+                        });
+                    </script>
+                    <sheet>
+                        <group col="4">
+                            <field name="source_lang_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="target_lang_id" domain="[('id','!=',source_lang_id)]" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="client_deadline" />
+                            <field name="character_count" />
+                            <field name="deadline" />
+                            <field name="mainfile_count" invisible="1"/>
+                            <field name="referencefile_count" invisible="1"/>
+                            <field name="product_id" invisible="1"/>
+                            <field name="name" invisible="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Client File &amp; Instructions" name="client_file_ins">
+                                <separator string="Instructions"/>
+                                <field name="sale_instruction_line" force_save="1">
+                                    <tree editable="bottom">
+                                        <field name="name" required="1" attrs="{'readonly': ['|', ('is_original_ins','=',True), ('is_default_ins','=',True)]}"/>
+                                        <field name="mark_reviewed"/>
+                                        <field name="send_ins_to_pm"/>
+                                        <field name="is_original_ins" invisible="1"/>
+                                        <field name="is_default_ins" invisible="1"/>
+                                    </tree>
+                                    <form create="false" delete="1">
+                                        <group>
+                                            <group>
+                                                <field name="name" required="1"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                                <div class="Buttonright">
+                                    <button name="%(fine_uploader.action_file_uploader)d" string="Upload File(s)"
+                                            type="action" class="fa fa-upload custombtn" style="margin-right:10px"
+                                            context="{
+                                                'default_active_id': active_id,
+                                                'default_active_model': active_model,
+                                                'default_field_name': 'sale_original_file_line',
+                                                'default_so_type': 'quotation',
+                                                'default_file_type': 'client',
+                                            }"
+                                    />
+                                </div>
+                                <separator string="Translation Files"/>
+                                <field name="sale_original_file_line">
+                                    <tree editable="bottom" create="0" edit="0" delete="0">
+                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                        <field name="datas" required="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                        <field name="character_count" invisible="1" default="0"/>
+                                        <field name="file_type" invisible="1"/>
+                                        <field name="datas_fname" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                        <button name="move_to_refrence" placeholder="File Move" class="fa fa-arrow-right Buttonright" style="font-size:20px;color:green;" type="object"/>
+                                        <button name="open_confirmation_wiz" help="Delete" class="del-cust fa fa-trash-o Buttonright"
+                                                type="object"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                            <field name="datas" required="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                            <field name="character_count" invisible="1" default="0"/>
+                                            <field name="file_type" invisible="1"/>
+                                            <field name="datas_fname" invisible="1"/>
+                                        </group>
+                                    </form>
+                                </field>
+                                <div class="Buttonright">
+                                    <button name="%(fine_uploader.action_file_uploader)d" string="Upload File(s)"
+                                            type="action" class="fa fa-upload custombtn" style="margin-right:10px"
+                                            context="{
+                                                'default_active_id': active_id,
+                                                'default_active_model': active_model,
+                                                'default_field_name': 'reference_assignment_line',
+                                                'default_so_type': 'quotation',
+                                                'default_file_type': 'refrence',
+                                            }"
+                                    />
+                                </div>
+                                <separator string="Reference Files"/>
+                                <field name="reference_assignment_line">
+                                    <tree editable="bottom" create="0" delete="0">
+                                        <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                        <field name="datas" required="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                        <field name="file_type" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                        <field name="datas_fname" invisible="1"/>
+                                        <button name="open_confirmation_wiz" help="Delete" class="del-cust fa fa-trash-o Buttonright"
+                                                type="object"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="url" required="1" readonly="1" widget="url" text_field="datas_fname" string="File Content"/>
+                                            <field name="datas" required="1" widget="custom_binary_field" filename="datas_fname" invisible="1"/>
+                                            <field name="file_type" invisible="1"/>
+                                            <field name="datas_fname" invisible="1"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Service &amp; Memsource" name="service_memsource_ins">
+                                <group name="translation_level" string="Translation Level's">
+                                    <field name="service_level_line" force_save="1" nolabel="1">
+                                        <tree editable="bottom" create="0" delete="0">
+                                            <field name="service_level_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            <field name="deadline" options="{'datepicker': {'disable_past_dates': true}}"/>
+                                            <field name="unit_rate" required="1"/>
+                                            <field name="fee" required="1" force_save="1"/>
+                                            <field name="visible_to_client" readonly="1" invisible="1"/>
+                                            <field name="reccommend" readonly="1"/>
+                                            <field name="add_translation_level_id" invisible="1"/>
+                                            <field name="sale_service_line_id" invisible="1"/>
+                                            <field name="is_original_service_level" invisible="1"/>
+                                        </tree>
+                                        <form create="0" delete="0">
+                                            <group>
+                                                <group>
+                                                    <field name="service_level_id" readonly="1" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                    <field name="deadline"/>
+                                                    <field name="unit_rate" required="1"/>
+                                                    <field name="fee" required="1" force_save="1"/>
+                                                    <field name="reccommend"/>
+                                                    <field name="sale_service_line_id" invisible="1"/>
+                                                    <field name="is_original_service_level" invisible="1"/>
+                                                </group>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>
+                                <separator string="Add-ons Fee"/>
+                                <field name="addons_fee_line" force_save="1">
+                                    <tree editable="bottom">
+                                        <field name="addons_id"
+                                               required="1" domain="[('addons_service_bool', '=', True)]"
+                                               options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                        <field name="unit_id" required="1"
+                                               options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                        <field name="no_of_unit" attrs="{'readonly': [('enter_unit_bool','=',False)]}"/>
+                                        <field name="price" required="1" />
+                                        <field name="total_price" readonly="1" force_save="1"/>
+                                        <field name="enter_unit_bool" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="addons_id" required="1" domain="[('addons_service_bool', '=', True)]"
+                                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                                <field name="no_of_unit" />
+                                                <field name="price" required="1"/>
+                                                <field name="total_price" readonly="1" force_save="1"/>
+                                                <field name="unit_id" readonly="1"
+                                                       options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                        <footer>
+                            <button string="Save" name="action_update_quotation" type="object" style="margin-right:10px"
+                                    class="oe_highlight"/>
+                            <button string="Discard" special="cancel" class="btn-secondary" style="margin-right:10px"
+                                id="spc_rev_btn_id" />
+<!--                            <a href="javascript: window.history.back()" role="button"-->
+<!--                               class="btn btn-primary oe_highlight">Back</a>-->
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

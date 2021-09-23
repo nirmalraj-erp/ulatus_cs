@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--View for Generate Monthly Invoice wizard-->
+        <record id="create_monthly_invoice_wiz_view" model="ir.ui.view">
+            <field name="name">Generate Monthly Invoice</field>
+            <field name="model">create.monthly.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Generate Monthly Invoices">
+                    <p class="oe_grey">Please make sure to select the list of invoices under same organisation<br/>
+                        <b>Note:</b> Check if PO Number is available for all the selected invoices
+                    </p>
+                    <footer>
+                        <button name="generate_invoice" string="Submit" type="object" class="btn btn-outline-info"/>
+                        <button string="Cancel" class="btn btn-outline-dark" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--Generate Monthly Invoice menu in Action button dropdown-->
+        <act_window
+            id="action_create_monthly_invoice_wiz_view"
+            name="Generate Invoice"
+            res_model="create.monthly.invoice"
+            src_model="assignment"
+            view_mode="form"
+            multi="True"
+            target="new"
+            key2="client_action_multi"
+        />
+
+    </data>
+</odoo>

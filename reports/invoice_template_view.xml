@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_templat">
+        <template id="monthly_invoice">
+           <t t-call="web.html_container">
+               <img src="'/CSUlatusGlobal/ulatus_cs/static/description/enago_voxtab_ulatus_logo.png'" height="200px" width="100%"/>
+<!--               <t t-if="record.inv_type == 'mon' and record.currency_id.name == 'USD' or record.currency_id.name == 'EUR'">-->
+                   <t t-foreach="docs" t-as="doc">
+                       <t t-call="web.external_layout">
+                           <div class="page">
+                                <head>
+                                    <style type="text/css">
+                                        #table-1     {
+                                            border: 1px solid black;
+                                                        }
+                                        #table-2     {
+                                            border: 0px;
+                                        }
+
+                                        th      {
+                                            font-size: 15px;
+                                            text-align:center;
+                                            border: 1px solid black;
+                                                }
+                                        td      {
+                                            text-align:center;
+                                                }
+                                        .heading1 {
+                                            font-weight: bold;
+                                            font-size: 20px;
+                                            text-decoration: underline;
+                                            test-align: center;
+                                                    }
+                                        .heading2 {
+                                            font-weight: bold;
+                                            font-size: 16px;
+                                            test-align: left;
+                                            margin: 0px 0px 0px 0px;
+                                                    }
+                                        #div1 {
+                                            margin: 0px 10px 0px 0px;
+                                                    }
+                                    </style>
+                                </head>
+                            <img src="'/CSUlatusGlobal/ulatus_cs/static/description/enago_voxtab_ulatus_logo.png'" height="200px" width="100%"/>
+                               <div class="heading1" align="center">
+                                   Invoice
+                               </div><br></br>
+                               <table id="table-2" width="100%">
+                                   <tr>
+                                       <td>
+                                           <div align="left">
+                                           <b>Invoice Date: </b><t t-esc="doc.date_invoice"/></div>
+                                       </td>
+                                       <td><div align="right">
+                                          <b>Invoice No: </b><t t-esc="doc.number"/></div>
+                                       </td>
+
+                                   </tr>
+                                   <tr>
+                                       <td><div align="left">
+                                           <b>Payment Due Date: </b><t t-esc="doc.date_due"/></div>
+                                       </td>
+                                   </tr>
+                               </table>
+                               <br></br>
+
+                               <div class="heading2">
+                                   <b>Personal Details</b><hr></hr></div>
+                               <br></br>
+                                    Name: <t t-esc="doc.partner_id.name"/>
+                               <br></br>
+                                    Organisation: <t t-esc="doc.partner_id.parent_id.name"/>
+                               <br></br>
+                                    Address: <t t-esc="doc.partner_id.street"/>
+                               <br></br>
+                                    Number: <t t-esc="doc.partner_id.phone"/>
+                               <br></br>
+                                    Email: <t t-esc="doc.partner_id.email"/>
+                               <br></br><br></br>
+                               <div class="heading2">
+                                   <b>Assignment Summary</b><hr></hr></div>
+                               <br></br>
+                                    <table id="table-1" width="100%" nowrap="False">
+                                        <t t-foreach="monthly_list" t-as="record">
+                                            <tr>
+                                                <th>Serial Number</th>
+                                                <th>Service</th>
+                                                <th>Priority</th>
+                                                <th>PO Number</th>
+                                                <th>Order Number</th>
+                                                <th>Delivery Date</th>
+                                                <th>Total units</th>
+                                                <th>Rate per unit</th>
+                                                <th>Fees</th>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><t t-esc="record['product_id']"/></td>
+                                                <td><t t-esc="record['priority']"/></td>
+                                                <td>
+                                                    <t t-if="record['po_number']"
+                                                            t-esc="record['po_number']"/></td>
+                                                <td><t t-esc="record['name']"/></td>
+                                                <td><t t-esc="record['deadline']"/></td>
+                                                <td><t t-esc="record['char_count']"/></td>
+                                                <td></td>
+                                                <td><t t-esc="record['amount_total']"/></td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                               </div>
+                       </t>
+                   </t>
+<!--               </t>-->
+           </t>
+        </template>
+
+<!--        <head>-->
+<!--            <style type="text/css">-->
+<!--                #table-1     {-->
+<!--                    border: 2px solid black;-->
+<!--                                }-->
+<!--                #table-2     {-->
+<!--                    border: 0px;-->
+<!--                    table-width:"60%";-->
+<!--                }-->
+<!--                #table-3     {-->
+<!--                    text-align:left;-->
+<!--                    table-width:"50%";-->
+<!--                }-->
+
+<!--                th      {-->
+<!--                    font-size: 15px;-->
+<!--                    text-align:center;-->
+<!--                    border: 1px solid black;-->
+<!--                        }-->
+<!--                td      {-->
+<!--                    text-align:center;-->
+<!--                        }-->
+<!--                tr     {-->
+<!--                    text-align:left;-->
+<!--                        }-->
+<!--                .heading1 {-->
+<!--                    font-weight: strong;-->
+<!--                    font-size: 30px;-->
+<!--                    text-decoration: underline;-->
+<!--                    test-align: center;-->
+<!--                            }-->
+<!--                .heading2 {-->
+<!--                    font-weight: bold;-->
+<!--                    font-size: 16px;-->
+<!--                    test-align: left;-->
+<!--                            }-->
+<!--                #div1 {-->
+<!--                    margin: 0px 10px 0px 0px;-->
+<!--                            }-->
+<!--            </style>-->
+<!--        </head>-->
+<!--           <t t-call="web.external_layout">-->
+<!--               <t t-foreach="docs" t-as="doc">-->
+<!--                   <div class="page">-->
+<!--                    <t t-call="web.html_container">-->
+<!--                            <img src="'/CSUlatusGlobal/ulatus_cs/static/description/enago_voxtab_ulatus_logo.png'" height="200px" width="100%"/>-->
+<!--&lt;!&ndash;                        <img src="/opt/odoo/odoo-12.0.post20201111/custom/CSUlatusGlobal/ulatus_cs/static/description/enago_voxtab_ulatus_logo.png" height="150px" width="100%"/>&ndash;&gt;-->
+<!--                            <br></br><br></br>-->
+<!--                        <h4><b><u><div class="heading1" align="center">-->
+<!--                               INVOICE-->
+<!--                        </div></u></b></h4><br></br>-->
+<!--                        <template id="report_monthly_invoice_templat">-->
+<!--                            <table width="100%">-->
+<!--                               <tr>-->
+<!--                                   <td>-->
+<!--                                       <div align="left">-->
+<!--                                       <b>Invoice Date: </b><t t-esc="doc.date_invoice"/></div>-->
+<!--                                   </td>-->
+<!--                                   <td><div align="right">-->
+<!--                                      <b>Invoice No: </b><t t-esc="doc.number"/></div>-->
+<!--                                   </td>-->
+<!--                               </tr>-->
+<!--                               <tr>-->
+<!--                                   <td><div align="left">-->
+<!--                                       <b>Payment Due Date: </b><t t-esc="doc.date_due"/></div>-->
+<!--                                   </td>-->
+<!--                               </tr>-->
+<!--                            </table>-->
+<!--                        </template>-->
+<!--                        <template id="report_individual_invoice_templat">-->
+<!--                           <table id="table-2" width="100%">-->
+<!--                               <tr>-->
+<!--                                   <td>-->
+<!--                                       <div align="left">-->
+<!--                                       <b>Invoice Date: </b><t t-esc="doc.date_invoice"/></div>-->
+<!--                                   </td>-->
+<!--                                   <td><div align="right">-->
+<!--                                          <b>Invoice No: </b><t t-esc="doc.number"/>-->
+<!--                                   </div>-->
+<!--                                   </td>-->
+<!--                               </tr>-->
+<!--                           </table>-->
+<!--                           <br></br><br></br>-->
+
+<!--                           <div class="heading2">-->
+<!--                               <b>Personal Details</b><hr></hr>-->
+<!--                           </div>-->
+<!--                           <br></br>-->
+<!--                           <table width="50%" text-align="left">-->
+<!--                                <tr font-weight="bold">-->
+<!--                                   <td>Membership ID:</td>-->
+<!--                                   <td><t t-esc="doc.partner_id.membership_id"/></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                   <td>Name:</td>-->
+<!--                                   <td><t t-esc="doc.partner_id.name"/></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                   <td>Organisation:</td>-->
+<!--                                   <td><t t-esc="doc.partner_id.parent_id.name"/></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                   <td>Email:</td>-->
+<!--                                   <td><t t-esc="doc.partner_id.email"/></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                   <td>Address:</td>-->
+<!--                                   <td><t t-esc="doc.partner_id.street"/></td>-->
+<!--                                </tr>-->
+<!--                           </table>-->
+
+<!--                           <br></br><br></br>-->
+<!--                           <div class="heading2">-->
+<!--                               <b>Assignment Summary</b><hr></hr></div>-->
+<!--                                <br></br>-->
+<!--                                <table id="table-2">-->
+<!--                                    <tr>-->
+<!--                                        <td font-weight="bold">Service:</td>-->
+<!--&lt;!&ndash;                                        <td><t t-foreach="doc.invoice_line_ids.name" t-as="line">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </t>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                                        </td>&ndash;&gt;-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td>Assignment number:</td>-->
+<!--&lt;!&ndash;                                        <td><t t-esc="doc.product_id.name"/></td>&ndash;&gt;-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td>PO number:</td>-->
+<!--&lt;!&ndash;                                        <td><t t-esc="doc.product_id.name"/></td>&ndash;&gt;-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+<!--                                <br></br><br></br>-->
+<!--                                <table border="2px" width="100%" text-align="left">-->
+<!--                                    <tr>-->
+<!--                                        <td width="22%">Unit Count</td>-->
+<!--                                        <td width="22%"></td>-->
+<!--                                        <td width="22%">Delivery Date</td>-->
+<!--&lt;!&ndash;                                        <td width="22%"><t t-esc="doc.deadline"/></td>&ndash;&gt;-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td width="22%">Rate per unit</td>-->
+<!--                                        <td width="22%"></td>-->
+
+<!--                                        <td width="22%">Assignment Fees</td>-->
+<!--                                        <td width="22%"></td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td colspan="2">-->
+<!--                                        <b>Remarks:</b> 50% Advance Payment required.</td>-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+<!--                            <br></br>-->
+<!--                            <p><b>-->
+<!--                            Creditcard Payment Link: http://www.voxtab.com/32.php-->
+<!--                            <br></br><br></br>-->
+<!--                            Company Name: Crimson Interactive Inc<br></br>-->
+<!--                            Registered Address: 160 Greentree Dr., Suite 101, Dover, DE USA 19904<br></br>-->
+<!--                            Wire transfer details:<br></br>-->
+<!--                            Name OF Bank: Bank of America<br></br>-->
+<!--                            Account Number: 2910 1760 4910<br></br>-->
+<!--                            Beneficiary Bank ACH Routing Number:<br></br>-->
+<!--                            - Electronic (ex. Direct Deposit/Automatic Payment): 081904808<br></br>-->
+<!--                            - Wire Transfer: 026009593<br></br>-->
+<!--                            Beneficiary Bank swift code for incoming foreign wires in US$: BOFAUS3N<br></br>-->
+<!--                            Beneficiary Bank swift code for incoming foreign wires in foreign currency: BOFAUS6S<br></br>-->
+<!--                            Bank Address: IL1-101-02-01. 2 North Riverside Plaza, Chicago, IL 60606.<br></br><hr></hr>-->
+<!--                            </b></p>-->
+<!--                        </template>-->
+                        <div class="footer">
+                            Crimson Interactive
+                        </div>
+<!--                    </t>-->
+<!--                </div>-->
+<!--           </t>-->
+<!--        </t>-->
+    </template>
+</odoo>

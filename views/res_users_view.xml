@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- <record id="view_users_form_ulatus" model="ir.ui.view">
+            <field name="name">res.users.form.ulatus</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <form string="Users">
+                    <header>
+                    </header>
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                                <field name="active" widget="boolean_button" options='{"terminology": "active"}'/>
+                            </button>
+                        </div>
+                        <field name="active_partner" required="0" readonly="1" invisible="1"/>
+                        <div class="alert alert-info text-center o_form_header"
+                            attrs="{'invisible': [
+                                '|', '|',
+                                '&amp;', ('active', '=', True), ('active_partner', '=', True),
+                                '&amp;', ('active', '=', False), ('active_partner', '=', False),
+                                '&amp;', ('active', '=', True), ('active_partner', '=', False),
+                            ]}"
+                            role="alert">
+                          <a class="close" data-dismiss="alert" href="#">x</a>
+                          <div>
+                            <strong>The contact linked to this user is still active</strong>
+                          </div>
+                          <div>You can archive the contact
+                            <field name="partner_id" required="0" readonly="1"/>
+                          </div>
+                        </div>
+                        <field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium"}'/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" required="1"/></h1>
+                            <field name="email" invisible="1"/>
+                            <label for="login" class="oe_edit_only" string="Email Address"/>
+                            <h2><field name="login"/></h2>
+                            <group>
+                                <field name="partner_id" readonly="1" required="0" groups="base.group_no_one"
+                                        attrs="{'invisible': [('id', '=', False)]}"/>
+                                <field name="lang"/>
+                                <field name="tz" widget="timezone_mismatch" options="{'tz_offset_field': 'tz_offset'}" required="1"/>
+                                        <field name="tz_offset" invisible="1"/>
+                            </group>
+                        </div>
+                        <notebook colspan="4">
+                            <page name="access_rights" string="Access Rights"> -->
+                                <!-- <group string="Multi Companies" attrs="{'invisible': [('companies_count', '&lt;=', 1)]}">
+                                    <field string="Allowed Companies" name="company_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                    <field string="Current Company" name="company_id" context="{'user_preference': 0}"/>
+                                    <field string="Companies count" name="companies_count" invisible="1"/>
+                                </group> -->
+                                <!-- <field name="groups_id"/>
+                            </page> -->
+                            <!-- <page string="Preferences">
+                                <group>
+                                    <group string="Localization" name="preferences">
+                                        
+                                        <field name="tz" widget="timezone_mismatch" options="{'tz_offset_field': 'tz_offset'}" required="1"/>
+                                        <field name="tz_offset" invisible="1"/>
+                                    </group>
+                                    <group string="Menus Customization" groups="base.group_no_one">
+                                        <field name="action_id"/>
+                                    </group>
+                                </group>
+                                <group string="Messaging and Social" name="messaging">
+                                    <field name="signature"/>
+                                </group>
+                            </page> -->
+                       <!--  </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record> -->
+
+       <!--  <record id="view_users_tree_ulatus" model="ir.ui.view">
+            <field name="name">res.users.tree.ulatus</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <tree string="Users">
+                    <field name="name"/>
+                    <field name="login"/>
+                    <field name="lang"/>
+                    <field name="login_date"/>
+                </tree>
+            </field>
+        </record> -->
+        <!-- 
+        <record id="action_res_users_ulatus" model="ir.actions.act_window">
+            <field name="name">Users</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.users</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="view_users_tree_ulatus"/>
+            <field name="search_view_id" ref="base.view_users_search"/>
+            <field name="context">{'search_default_no_share': 1}</field>
+            <field name="help">Create and manage users that will connect to the system. Users can be deactivated should there be a period of time during which they will/should not connect to the system. You can assign them groups in order to give them specific access to the applications they need to use in the system.</field>
+        </record>
+        <record id="action_res_users_view1_ulatus" model="ir.actions.act_window.view">
+            <field eval="12" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_users_tree_ulatus"/>
+            <field name="act_window_id" ref="action_res_users_ulatus"/>
+        </record>
+        <record id="action_res_users_view2_ulatus" model="ir.actions.act_window.view">
+            <field eval="22" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_users_form_ulatus"/>
+            <field name="act_window_id" ref="action_res_users_ulatus"/>
+        </record>
+ -->
+
+        <!-- Update user form !-->
+        <record id="view_users_form_ulatus" model="ir.ui.view">
+            <field name="name">res.users.form.ulatus</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//page[2]" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>  -->
+                <xpath expr="//field[@name='tz_offset']" position="after">
+                    <field name="tz_abbreviation"/>
+                </xpath>
+                <xpath expr="//field[@name='action_id']" position="after">
+                    <field name="first_time_login" invisible="1"/>
+                </xpath>
+<!--                <xpath expr="//field[@name='tz']" position="attributes">-->
+<!--                    <attribute name="required">True</attribute>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='tz']" position="replace">
+                    <field name="tz" attrs="{'required':[('id', '>', 5)]}"/>
+                </xpath>
+                <xpath expr="//div/group/field[@name='partner_id']" position="replace">
+                    <field name="partner_id" readonly="1" required="0" groups="base.group_no_one"
+                           attrs="{'invisible': [('id', '=', False)]}"
+                           context="{'form_view_ref':'ulatus_cs.profile_preference_view_partner_form'}"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- User menu Inherit -->
+        <menuitem id="menu_ulatus_users_master" parent="menu_ulatus_root_master" sequence="4" name="Users" />
+        <menuitem action="base.action_res_users" id="menu_action_res_users_ulatus" 
+                  parent="menu_ulatus_users_master" sequence="0"/>
+
+    </data>
+</odoo>
